@@ -1,0 +1,11 @@
+schema = 'https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/refs/heads/main/NewHorizons/Schemas/text_schema.xsd'
+file_type = "NomaiObject"
+
+[[text_block]]
+id = 1
+text = 'this is an example'
+location = ["A", "B"]
+
+[[log_condition]]
+location = ["A"]
+reveal_fact = [{ id = "goobert", condition = [1, 2]}]

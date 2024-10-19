@@ -1,0 +1,12 @@
+[package]
+name = "nh-cleaner-dialogue"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+quick-xml = "0.36.2"
+toml = "0.8.19"
+
+[dependencies.serde]
+version = "1.0.210"
+features = ["derive"]

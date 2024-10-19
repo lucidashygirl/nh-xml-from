@@ -1,0 +1,16 @@
+<NomaiObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/refs/heads/main/NewHorizons/Schemas/text_schema.xsd">
+  <TextBlock>
+    <ID>1</ID>
+    <LocationA />
+    <LocationB />
+    <Text>this is an example</Text>
+  </TextBlock>
+  <ShipLogConditions>
+    <LocationA />
+    <RevealFact>
+      <FactID>"goobert"</FactID>
+      <Condition>1, 2</Condition>
+    </RevealFact>
+  </ShipLogConditions>
+</NomaiObject>
