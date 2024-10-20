@@ -169,7 +169,7 @@ fn validate_astral_object_config(config: &ConfigFile) -> String {
 
 fn validate_entry_config(config: &ConfigFile, entries: &Vec<Entry>) -> Vec<Entry> {
     match &config.entry {
-        Some(blocks) => for_entry_config(blocks, &entries).expect("No blocks :3"),
+        Some(blocks) => for_entry_config(blocks, entries).expect("No blocks :3"),
         None => Vec::new(),
     }
 }
@@ -261,7 +261,7 @@ fn for_entry_config(
                     local_entries.push(t.as_table().unwrap().clone())
                 }
             }
-            entry_block.entry = for_entry_config(&local_entries, &entry_vec);
+            entry_block.entry = for_entry_config(&local_entries, entry_vec);
         }
         return_vec.push(entry_block);
     }
