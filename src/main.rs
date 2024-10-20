@@ -1,7 +1,5 @@
 use quick_xml::{events::*, reader::*, writer::*};
-use serde::*;
 use std::{env, fs::*, io::*};
-use toml::*;
 
 mod data;
 
@@ -34,8 +32,8 @@ fn main() {
     let xml = validate_config(&toml_config);
 
     let mut reader = Reader::from_str(xml.as_str());
-    reader.config_mut().trim_text(true); // NOTE: might need to remove trim_text to get formatting
-    let mut writer = Writer::new(Cursor::new(Vec::new()));
+    reader.config_mut().trim_text(true);
+    let mut writer = Writer::new_with_indent(Cursor::new(Vec::new()), 32, 2);
     loop {
         match reader.read_event() {
             Ok(Event::Start(e)) if e.name().as_ref() == b"this_tag" => {
@@ -115,11 +113,9 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
     }
 
     let mut text_block_index = 0;
-    println!("{:?}", &config.log_condition);
     if let Some(cond) = &config.log_condition {
         for block in cond {
             shiplog_conditions.push(Conditions::default());
-            println!("{}", block);
             if let Some(loc) = block.get("location") {
                 let locations = loc.as_array().unwrap();
                 let mut new_locations: Vec<String> = Vec::new();
@@ -129,7 +125,6 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
                 shiplog_conditions[text_block_index].location = Some(new_locations);
             }
             if let Some(facts) = block.get("reveal_fact") {
-                println!("fat {}", facts);
                 if let Some(table) = facts.as_array() {
                     for thing in table {
                         let mut fact = Fact::default();
@@ -139,17 +134,14 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
                         }
                         match thing.get("condition") {
                             Some(condition) => {
-                                println!("cond {}", condition);
                                 if let Some(con) = condition.as_array() {
                                     for i in con {
-                                        println!("i {}", i);
                                         fact.condition.push(i.to_string());
                                     }
                                 }
                             }
                             None => break,
                         }
-                        println!("FACT REVEALED");
                         shiplog_conditions[text_block_index].reveal_fact.push(fact);
                     }
                 }
@@ -157,84 +149,123 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
             text_block_index += 1;
         }
     }
-    println!("{nomai_text_blocks:?}");
-    println!("{shiplog_conditions:?}");
     //if shiplog_conditions.is_empty() {
     //    return (nomai_text_blocks, None);
     //}
-    generate_nomai_text_xml_string(&config, (nomai_text_blocks, Some(shiplog_conditions)))
+    generate_nomai_text_xml_string(config, (nomai_text_blocks, Some(shiplog_conditions)))
 }
 
 fn validate_astral_object_config(config: &ConfigFile) -> String {
-    let mut entries: Vec<Entry> = Vec::new();
+    let entries: Vec<Entry> = Vec::new();
     let id = match &config.id {
         Some(id) => id.clone(),
         None => panic!("invalid id"),
     };
-    validate_entry_config(config, &mut entries);
+    let entries = validate_entry_config(config, &entries);
     let entry = Some(entries);
     let astro_object = AstroObjectEntry { id, entry };
     generate_astro_object_xml_string(config, astro_object)
 }
 
-fn validate_entry_config(config: &ConfigFile, entries: &mut Vec<Entry>) {
-    if let Some(blocks) = &config.entry {
-        for block in blocks {
-            let mut entry_block = Entry::default();
-            match block.get("id") {
-                Some(id) => entry_block.id = id.to_string(),
-                None => panic!("field id required"),
+fn validate_entry_config(config: &ConfigFile, entries: &Vec<Entry>) -> Vec<Entry> {
+    match &config.entry {
+        Some(blocks) => for_entry_config(blocks, &entries).expect("No blocks :3"),
+        None => Vec::new(),
+    }
+}
+
+use toml::map::Map;
+use toml::value::Value;
+fn for_entry_config(
+    blocks: &Vec<Map<String, Value>>,
+    entry_vec: &Vec<Entry>,
+) -> Option<Vec<Entry>> {
+    let mut return_vec = entry_vec.clone();
+    for block in blocks {
+        let mut entry_block = Entry::default();
+        match block.get("id") {
+            Some(id) => entry_block.id = id.to_string(),
+            None => panic!("field id required"),
+        }
+        match block.get("name") {
+            Some(name) => entry_block.name = name.to_string(),
+            None => panic!("field id required"),
+        }
+        if let Some(curiosity) = block.get("curiosity") {
+            entry_block.curiosity = Some(curiosity.to_string());
+        }
+        if let Some(is_curiosity) = block.get("is_curiosity") {
+            entry_block.is_curiosity = is_curiosity.as_bool();
+        }
+        if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
+            entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+        }
+        if let Some(parent_ignore_not_revealed) = block.get("parent_ignore_not_revealed") {
+            entry_block.parent_ignore_not_revealed = parent_ignore_not_revealed.as_bool();
+        }
+        if let Some(ignore_more_to_explore_condition) =
+            block.get("ignore_more_to_explore_condition")
+        {
+            entry_block.ignore_more_to_explore_condition =
+                Some(ignore_more_to_explore_condition.to_string());
+        }
+        if let Some(alt_photo_condition) = block.get("alt_photo_condition") {
+            entry_block.alt_photo_condition = Some(alt_photo_condition.to_string());
+        }
+        if let Some(rumor_fact) = block.get("rumor_fact") {
+            let mut facts: Vec<RumorFact> = Vec::new();
+            #[allow(for_loops_over_fallibles)]
+            for fact in rumor_fact.as_table() {
+                let mut rumor = RumorFact::default();
+                match fact.get("id") {
+                    Some(id) => rumor.id = id.to_string(),
+                    None => panic!("field id required"),
+                }
+                if let Some(source_id) = fact.get("source_id") {
+                    rumor.source_id = Some(source_id.to_string());
+                }
+                if let Some(rumor_name) = fact.get("rumor_name") {
+                    rumor.rumor_name = Some(rumor_name.to_string());
+                }
+                if let Some(rumor_name_priority) = fact.get("rumor_name_priority") {
+                    rumor.rumor_name_priority = Some(rumor_name_priority.as_integer().unwrap());
+                }
+                if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
+                    entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+                }
+                facts.push(rumor);
             }
-            match block.get("name") {
-                Some(name) => entry_block.name = name.to_string(),
-                None => panic!("field id required"),
+            entry_block.rumor_fact = Some(facts);
+        }
+        if let Some(explore_fact) = block.get("explore_fact") {
+            let mut facts: Vec<ExploreFact> = Vec::new();
+            #[allow(for_loops_over_fallibles)]
+            for fact in explore_fact.as_table() {
+                let mut explore = ExploreFact::default();
+                match fact.get("id") {
+                    Some(id) => explore.id = id.to_string(),
+                    None => panic!("field id required"),
+                }
+                if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
+                    entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+                }
+                facts.push(explore);
             }
-            if let Some(curiosity) = block.get("curiosity") {
-                entry_block.curiosity = Some(curiosity.to_string());
-            }
-            if let Some(is_curiosity) = block.get("is_curiosity") {
-                entry_block.is_curiosity = is_curiosity.as_bool();
-            }
-            if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
-                entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
-            }
-            if let Some(parent_ignore_not_revealed) = block.get("parent_ignore_not_revealed") {
-                entry_block.parent_ignore_not_revealed = parent_ignore_not_revealed.as_bool();
-            }
-            if let Some(ignore_more_to_explore_condition) =
-                block.get("ignore_more_to_explore_condition")
-            {
-                entry_block.ignore_more_to_explore_condition =
-                    Some(ignore_more_to_explore_condition.to_string());
-            }
-            if let Some(alt_photo_condition) = block.get("alt_photo_condition") {
-                entry_block.alt_photo_condition = Some(alt_photo_condition.to_string());
-            }
-            if let Some(rumor_fact) = block.get("rumor_fact") {
-                let mut facts: Vec<RumorFact> = Vec::new();
-                for fact in rumor_fact.as_table() {
-                    let mut rumor = RumorFact::default();
-                    match fact.get("id") {
-                        Some(id) => rumor.id = id.to_string(),
-                        None => panic!("field id required"),
-                    }
-                    if let Some(source_id) = fact.get("source_id") {
-                        rumor.source_id = Some(source_id.to_string());
-                    }
-                    if let Some(rumor_name) = fact.get("rumor_name") {
-                        rumor.rumor_name = Some(rumor_name.to_string());
-                    }
-                    if let Some(rumor_name_priority) = fact.get("rumor_name_priority") {
-                        rumor.rumor_name_priority = Some(rumor_name_priority.as_integer().unwrap());
-                    }
-                    if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
-                        entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
-                    }
+            entry_block.explore_fact = Some(facts);
+        }
+        if let Some(e) = block.get("entry") {
+            let mut local_entries: Vec<Map<String, Value>> = Vec::new();
+            #[allow(for_loops_over_fallibles)]
+            for thing in e.as_array() {
+                for t in thing {
+                    local_entries.push(t.as_table().unwrap().clone())
                 }
             }
-            entries.push(entry_block);
+            entry_block.entry = for_entry_config(&local_entries, &entry_vec);
         }
+        return_vec.push(entry_block);
     }
+    Some(return_vec)
 }
 
 fn get_file_extention(file_name: &String) -> String {
@@ -274,8 +305,8 @@ fn generate_nomai_text_xml_string(
         r#"<{} xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{}">"#,
         toml.file_type,
         toml.schema
-    ).as_str();
-    println!("block 0 started");
+    )
+    .as_str();
     for block in blocks.0 {
         xml += "<TextBlock>";
         xml += format!("<ID>{}</ID>", block.id).as_str();
@@ -294,10 +325,8 @@ fn generate_nomai_text_xml_string(
         xml += format!("<Text>{}</Text>", block.text).as_str();
         xml += "</TextBlock>";
     }
-    println!("block 1 started");
     if let Some(ref blocks) = blocks.1 {
         for block in blocks {
-            println!("bloc {:?}", block);
             xml += "<ShipLogConditions>";
             if let Some(location) = &block.location {
                 for l in location {
@@ -309,23 +338,21 @@ fn generate_nomai_text_xml_string(
                 }
             }
             for fact in &block.reveal_fact {
-                xml += format!("<RevealFact>").as_str();
-                xml += format!("<FactID>{}</FactID>", fact.id).as_str();
-                xml += "<Condition>";
-                let mut loops = 0;
-                for condition in &fact.condition {
-                    xml += format!("{}", condition).as_str();
+                xml += "        <RevealFact>".to_string().as_str();
+                xml += format!("            <FactID>{}</FactID>", fact.id).as_str();
+                xml += "            <Condition>";
+                for (loops, condition) in fact.condition.iter().enumerate() {
+                    xml += condition.to_string().as_str();
                     if loops == fact.condition.len() - 1 {
                         break;
                     }
                     xml += ", ";
-                    loops += 1;
                 }
                 xml += "</Condition>";
                 xml += "</RevealFact>";
             }
 
-            xml += format!("</ShipLogConditions>").as_str();
+            xml += "</ShipLogConditions>".to_string().as_str();
         }
     }
     xml += "</NomaiObject>";
@@ -339,18 +366,18 @@ fn generate_astro_object_xml_string(toml: &ConfigFile, blocks: AstroObjectEntry)
         toml.file_type,
         toml.schema
     ).as_str();
-    xml += "<AstroObjectEntry>";
     xml += format!("<ID>{}</ID>", blocks.id).as_str();
     if let Some(entries) = blocks.entry {
         xml += entry_convert_xml(entries).as_str();
     }
-    xml += "</AstroObjectEntry>";
+    xml += format!("</{}>", toml.file_type).as_str();
     xml
 }
 
 fn entry_convert_xml(entries: Vec<Entry>) -> String {
     let mut xml = String::new();
     for entry in entries {
+        xml += "<Entry>";
         xml += format!("<ID>{}</ID>", entry.id).as_str();
         xml += format!("<Name>{}</Name>", entry.name).as_str();
         if let Some(curiosity) = entry.curiosity {
@@ -421,6 +448,7 @@ fn entry_convert_xml(entries: Vec<Entry>) -> String {
         if let Some(entry) = entry.entry {
             xml += entry_convert_xml(entry).as_str();
         }
+        xml += "</Entry>";
     }
     xml
 }

@@ -30,7 +30,7 @@ pub struct DialogueTree {
     pub node: Vec<DialogueNode>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct DialogueNode {
     pub name: String,
     pub randomize: Option<bool>,
@@ -44,13 +44,13 @@ pub struct DialogueNode {
     pub dialogue_options_list: Option<DialogueOptionsList>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct DialogueOptionsList {
     pub dialogue_options: Option<Vec<DialogueOption>>,
     pub reuse_dialogue_options_list_from: Option<String>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct DialogueOption {
     pub text: String,
     pub required_log_condition: Option<Vec<String>>,
@@ -63,7 +63,7 @@ pub struct DialogueOption {
     pub condition_to_cancel: Option<String>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct Dialogue {
     pub page: Vec<String>,
 }
@@ -74,7 +74,7 @@ pub struct AstroObjectEntry {
     pub entry: Option<Vec<Entry>>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct Entry {
     pub id: String,
     pub name: String,
@@ -89,13 +89,13 @@ pub struct Entry {
     pub entry: Option<Vec<Entry>>,
 }
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Deserialize, Debug, Default, Clone)]
 pub struct Fact {
     pub id: String,
     pub condition: Vec<String>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct RumorFact {
     pub id: String,
     pub source_id: Option<String>,
@@ -103,7 +103,7 @@ pub struct RumorFact {
     pub rumor_name_priority: Option<i64>,
     pub ignore_more_to_explore: Option<bool>,
 }
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct ExploreFact {
     pub id: String,
     pub ignore_more_to_explore: Option<bool>,

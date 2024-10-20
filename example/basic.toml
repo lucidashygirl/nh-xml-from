@@ -8,4 +8,7 @@ location = ["A", "B"]
 
 [[log_condition]]
 location = ["A"]
-reveal_fact = [{ id = "goobert", condition = [1, 2]}]
+
+[[log_condition.reveal_fact]]
+id = "goobert"
+condition = [1, 2]
