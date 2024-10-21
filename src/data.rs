@@ -98,6 +98,7 @@ pub struct Fact {
 #[derive(Deserialize, Default, Debug, Clone)]
 pub struct RumorFact {
     pub id: String,
+    pub text: String,
     pub source_id: Option<String>,
     pub rumor_name: Option<String>,
     pub rumor_name_priority: Option<i64>,
@@ -106,6 +107,7 @@ pub struct RumorFact {
 #[derive(Deserialize, Default, Debug, Clone)]
 pub struct ExploreFact {
     pub id: String,
+    pub text: String,
     pub ignore_more_to_explore: Option<bool>,
 }
 #[derive(Deserialize, Debug, Default)]

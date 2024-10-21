@@ -1,0 +1,32 @@
+schema = "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd"
+file_type = "AstroObjectEntry"
+id = "EXAMPLE"
+
+[[entry]]
+id = "EXAMPLE_ENTRY_ONE"
+name = "Example One"
+curiosity = "EXAMPLE_CURIOSITY_ONE"
+
+[[entry.rumor_fact]]
+id = "EXAMPLE_RUMOR"
+source_id = "EXAMPLE_CURIOSITY_ONE"
+rumor_name = "Rumor Example"
+text = "This is some lame rumor text :3"
+
+[[entry.explore_fact]]
+id = "EXAMPLE_EXPLORE"
+text = "Example of explore fact :3c"
+ignore_more_to_explore = true
+
+[[entry.entry]]
+id = "EXAMPLE_ENTRY_CHILD"
+name = "Child Entry"
+
+[[entry.entry.explore_fact]]
+id = "EXAMPLE_EXPLORE_NESTED"
+text = "Example of explore fact, in a child entry :3c"
+ignore_more_to_explore = false # Explicit deny
+
+[[entry]]
+id = "EXAMPLE_ENTRY_TWO"
+name = "Example Two"

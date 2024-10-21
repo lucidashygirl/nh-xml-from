@@ -129,7 +129,7 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
                     for thing in table {
                         let mut fact = Fact::default();
                         match thing.get("id") {
-                            Some(id) => fact.id = id.to_string(),
+                            Some(id) => fact.id = id.as_str().unwrap().to_owned(),
                             None => break,
                         }
                         match thing.get("condition") {
@@ -184,15 +184,15 @@ fn for_entry_config(
     for block in blocks {
         let mut entry_block = Entry::default();
         match block.get("id") {
-            Some(id) => entry_block.id = id.to_string(),
+            Some(id) => entry_block.id = id.as_str().unwrap().to_string(),
             None => panic!("field id required"),
         }
         match block.get("name") {
-            Some(name) => entry_block.name = name.to_string(),
+            Some(name) => entry_block.name = name.as_str().unwrap().to_string(),
             None => panic!("field id required"),
         }
         if let Some(curiosity) = block.get("curiosity") {
-            entry_block.curiosity = Some(curiosity.to_string());
+            entry_block.curiosity = Some(curiosity.as_str().unwrap().to_string());
         }
         if let Some(is_curiosity) = block.get("is_curiosity") {
             entry_block.is_curiosity = is_curiosity.as_bool();
@@ -206,50 +206,67 @@ fn for_entry_config(
         if let Some(ignore_more_to_explore_condition) =
             block.get("ignore_more_to_explore_condition")
         {
-            entry_block.ignore_more_to_explore_condition =
-                Some(ignore_more_to_explore_condition.to_string());
+            entry_block.ignore_more_to_explore_condition = Some(
+                ignore_more_to_explore_condition
+                    .as_str()
+                    .unwrap()
+                    .to_string(),
+            );
         }
         if let Some(alt_photo_condition) = block.get("alt_photo_condition") {
-            entry_block.alt_photo_condition = Some(alt_photo_condition.to_string());
+            entry_block.alt_photo_condition =
+                Some(alt_photo_condition.as_str().unwrap().to_string());
         }
-        if let Some(rumor_fact) = block.get("rumor_fact") {
+        if let Some(rumor_facts) = block.get("rumor_fact") {
             let mut facts: Vec<RumorFact> = Vec::new();
             #[allow(for_loops_over_fallibles)]
-            for fact in rumor_fact.as_table() {
-                let mut rumor = RumorFact::default();
-                match fact.get("id") {
-                    Some(id) => rumor.id = id.to_string(),
-                    None => panic!("field id required"),
+            for rumor_fact in rumor_facts.as_array() {
+                for fact in rumor_fact {
+                    let mut rumor = RumorFact::default();
+                    match fact.get("id") {
+                        Some(id) => rumor.id = id.as_str().unwrap().to_string(),
+                        None => panic!("id field required"),
+                    }
+                    match fact.get("text") {
+                        Some(text) => rumor.text = text.as_str().unwrap().to_string(),
+                        None => panic!("text field required"),
+                    }
+                    if let Some(source_id) = fact.get("source_id") {
+                        rumor.source_id = Some(source_id.as_str().unwrap().to_string());
+                    }
+                    if let Some(rumor_name) = fact.get("rumor_name") {
+                        rumor.rumor_name = Some(rumor_name.as_str().unwrap().to_string());
+                    }
+                    if let Some(rumor_name_priority) = fact.get("rumor_name_priority") {
+                        rumor.rumor_name_priority = Some(rumor_name_priority.as_integer().unwrap());
+                    }
+                    if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
+                        entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+                    }
+                    facts.push(rumor);
                 }
-                if let Some(source_id) = fact.get("source_id") {
-                    rumor.source_id = Some(source_id.to_string());
-                }
-                if let Some(rumor_name) = fact.get("rumor_name") {
-                    rumor.rumor_name = Some(rumor_name.to_string());
-                }
-                if let Some(rumor_name_priority) = fact.get("rumor_name_priority") {
-                    rumor.rumor_name_priority = Some(rumor_name_priority.as_integer().unwrap());
-                }
-                if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
-                    entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
-                }
-                facts.push(rumor);
             }
             entry_block.rumor_fact = Some(facts);
         }
-        if let Some(explore_fact) = block.get("explore_fact") {
+        if let Some(explore_facts) = block.get("explore_fact") {
             let mut facts: Vec<ExploreFact> = Vec::new();
             #[allow(for_loops_over_fallibles)]
-            for fact in explore_fact.as_table() {
-                let mut explore = ExploreFact::default();
-                match fact.get("id") {
-                    Some(id) => explore.id = id.to_string(),
-                    None => panic!("field id required"),
+            for explore_fact in explore_facts.as_array() {
+                for fact in explore_fact {
+                    let mut explore = ExploreFact::default();
+                    match fact.get("id") {
+                        Some(id) => explore.id = id.as_str().unwrap().to_string(),
+                        None => panic!("id field required"),
+                    }
+                    match fact.get("text") {
+                        Some(text) => explore.text = text.as_str().unwrap().to_string(),
+                        None => panic!("text field required"),
+                    }
+                    if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
+                        entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+                    }
+                    facts.push(explore);
                 }
-                if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
-                    entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
-                }
-                facts.push(explore);
             }
             entry_block.explore_fact = Some(facts);
         }
@@ -338,9 +355,9 @@ fn generate_nomai_text_xml_string(
                 }
             }
             for fact in &block.reveal_fact {
-                xml += "        <RevealFact>".to_string().as_str();
-                xml += format!("            <FactID>{}</FactID>", fact.id).as_str();
-                xml += "            <Condition>";
+                xml += "<RevealFact>";
+                xml += format!("<FactID>{}</FactID>", fact.id).as_str();
+                xml += "<Condition>";
                 for (loops, condition) in fact.condition.iter().enumerate() {
                     xml += condition.to_string().as_str();
                     if loops == fact.condition.len() - 1 {
@@ -414,6 +431,7 @@ fn entry_convert_xml(entries: Vec<Entry>) -> String {
         }
         if let Some(rumor_fact) = entry.rumor_fact {
             for rumor in rumor_fact {
+                xml += "<RumorFact>";
                 xml += format!("<ID>{}</ID>", rumor.id).as_str();
                 if let Some(source_id) = rumor.source_id {
                     xml += format!("<SourceID>{}</SourceID>", source_id).as_str();
@@ -421,6 +439,7 @@ fn entry_convert_xml(entries: Vec<Entry>) -> String {
                 if let Some(rumor_name) = rumor.rumor_name {
                     xml += format!("<RumorName>{}</RumorName>", rumor_name).as_str();
                 }
+                xml += format!("<Text>{}</Text>", rumor.text).as_str();
                 if let Some(rumor_name_priority) = rumor.rumor_name_priority {
                     xml += format!(
                         "<RumorNamePriority>{}</RumorNamePriority>",
@@ -433,16 +452,20 @@ fn entry_convert_xml(entries: Vec<Entry>) -> String {
                         xml += "<IgnoreMoreToExplore />";
                     }
                 }
+                xml += "</RumorFact>";
             }
         }
         if let Some(explore_fact) = entry.explore_fact {
             for fact in explore_fact {
+                xml += "<ExploreFact>";
                 xml += format!("<ID>{}</ID>", fact.id).as_str();
+                xml += format!("<Text>{}</Text>", fact.text).as_str();
                 if let Some(ignore_more_to_explore) = fact.ignore_more_to_explore {
                     if ignore_more_to_explore {
                         xml += "<IgnoreMoreToExplore />";
                     }
                 }
+                xml += "</ExploreFact>";
             }
         }
         if let Some(entry) = entry.entry {

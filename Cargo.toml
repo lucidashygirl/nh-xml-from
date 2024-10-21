@@ -1,5 +1,5 @@
 [package]
-name = "nh-cleaner-dialogue"
+name = "nh-toml-to-xml"
 version = "0.1.0"
 edition = "2021"
 
