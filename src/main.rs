@@ -1,6 +1,8 @@
 use quick_xml::{events::*, reader::*, writer::*};
 use std::{env, fs::*, io::*};
 
+#[macro_use]
+mod util;
 mod data;
 
 use data::*;
@@ -9,25 +11,32 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() <= 1 {
-        panic!("No arguments provided!")
+        quit!("No arguments provided");
     }
 
     let file_path = &args[1];
-    let mut config = File::open(file_path).expect("File doesn't exist");
+    let mut config = match File::open(file_path) {
+        Ok(c) => c,
+        Err(_) => quit!("File doesn't exist"),
+    };
 
     let file_name = get_file_name(file_path);
     let extention = get_file_extention(&file_name);
     let name = file_name.replace(&extention, "");
     if extention.as_str() != "toml" {
-        panic!("Incorrect Format!")
+        quit!("Incorrect Format!");
     }
 
     let mut contents: String = String::new();
-    config
-        .read_to_string(&mut contents)
-        .expect("Couldn't convert to string");
+    match config.read_to_string(&mut contents) {
+        Ok(c) => c,
+        Err(_) => quit!("Couldn't convert to a string."),
+    };
 
-    let toml_config: ConfigFile = toml::from_str(contents.as_str()).expect("Invalid Syntax");
+    let toml_config: ConfigFile = match toml::from_str(contents.as_str()) {
+        Ok(c) => c,
+        Err(_) => quit!("Invalid Syntax"),
+    };
 
     let xml = validate_config(&toml_config);
 
@@ -63,8 +72,14 @@ fn main() {
     }
 
     let result = writer.into_inner().into_inner();
-    let mut file = File::create(format!("{}xml", name)).unwrap();
-    file.write_all(&result).unwrap();
+    let mut file = match File::create(format!("{}xml", name)) {
+        Ok(f) => f,
+        Err(_) => quit!("Could not create file"),
+    };
+
+    if let Err(_) = file.write_all(&result) {
+        quit!("Failed to write to file")
+    }
 }
 
 fn validate_config(config: &ConfigFile) -> String {
@@ -72,7 +87,7 @@ fn validate_config(config: &ConfigFile) -> String {
         "NomaiObject" => validate_nomai_text_config(config),
         //"DialogueTree" => validate_dialogue_tree_config(config),
         "AstroObjectEntry" => validate_astral_object_config(config),
-        _ => panic!("doesnt match anything lol"),
+        _ => quit!("No matching file type"),
     }
 }
 
@@ -88,7 +103,7 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
                 Some(id) => {
                     nomai_text_blocks[text_block_index].id = id.as_integer().unwrap() as u16
                 }
-                None => panic!("field id required"),
+                None => quit!("ID required"),
             }
             if let Some(parent) = block.get("parent") {
                 nomai_text_blocks[text_block_index].parent =
@@ -98,7 +113,7 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
                 Some(text) => {
                     nomai_text_blocks[text_block_index].text = text.as_str().unwrap().to_owned()
                 }
-                None => panic!("field id required"),
+                None => quit!("Text required"),
             }
             if let Some(loc) = block.get("location") {
                 let locations = loc.as_array().unwrap();
@@ -117,7 +132,10 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
         for block in cond {
             shiplog_conditions.push(Conditions::default());
             if let Some(loc) = block.get("location") {
-                let locations = loc.as_array().unwrap();
+                let locations = match loc.as_array() {
+                    Some(l) => l,
+                    None => quit!("Failed to get locations"),
+                };
                 let mut new_locations: Vec<String> = Vec::new();
                 for i in locations {
                     new_locations.push(i.as_str().unwrap().to_owned());
@@ -149,9 +167,6 @@ fn validate_nomai_text_config(config: &ConfigFile) -> String {
             text_block_index += 1;
         }
     }
-    //if shiplog_conditions.is_empty() {
-    //    return (nomai_text_blocks, None);
-    //}
     generate_nomai_text_xml_string(config, (nomai_text_blocks, Some(shiplog_conditions)))
 }
 
@@ -159,7 +174,7 @@ fn validate_astral_object_config(config: &ConfigFile) -> String {
     let entries: Vec<Entry> = Vec::new();
     let id = match &config.id {
         Some(id) => id.clone(),
-        None => panic!("invalid id"),
+        None => quit!("Invalid ID"),
     };
     let entries = validate_entry_config(config, &entries);
     let entry = Some(entries);
@@ -169,7 +184,7 @@ fn validate_astral_object_config(config: &ConfigFile) -> String {
 
 fn validate_entry_config(config: &ConfigFile, entries: &Vec<Entry>) -> Vec<Entry> {
     match &config.entry {
-        Some(blocks) => for_entry_config(blocks, entries).expect("No blocks :3"),
+        Some(blocks) => for_entry_config(blocks, entries).unwrap(),
         None => Vec::new(),
     }
 }
@@ -185,11 +200,11 @@ fn for_entry_config(
         let mut entry_block = Entry::default();
         match block.get("id") {
             Some(id) => entry_block.id = id.as_str().unwrap().to_string(),
-            None => panic!("field id required"),
+            None => quit!("ID required"),
         }
         match block.get("name") {
             Some(name) => entry_block.name = name.as_str().unwrap().to_string(),
-            None => panic!("field id required"),
+            None => quit!("Name required"),
         }
         if let Some(curiosity) = block.get("curiosity") {
             entry_block.curiosity = Some(curiosity.as_str().unwrap().to_string());
@@ -225,11 +240,11 @@ fn for_entry_config(
                     let mut rumor = RumorFact::default();
                     match fact.get("id") {
                         Some(id) => rumor.id = id.as_str().unwrap().to_string(),
-                        None => panic!("id field required"),
+                        None => quit!("ID required"),
                     }
                     match fact.get("text") {
                         Some(text) => rumor.text = text.as_str().unwrap().to_string(),
-                        None => panic!("text field required"),
+                        None => quit!("Text required"),
                     }
                     if let Some(source_id) = fact.get("source_id") {
                         rumor.source_id = Some(source_id.as_str().unwrap().to_string());
@@ -256,11 +271,11 @@ fn for_entry_config(
                     let mut explore = ExploreFact::default();
                     match fact.get("id") {
                         Some(id) => explore.id = id.as_str().unwrap().to_string(),
-                        None => panic!("id field required"),
+                        None => quit!("ID required"),
                     }
                     match fact.get("text") {
                         Some(text) => explore.text = text.as_str().unwrap().to_string(),
-                        None => panic!("text field required"),
+                        None => quit!("Text required"),
                     }
                     if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
                         entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
