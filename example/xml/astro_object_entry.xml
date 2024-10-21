@@ -1,0 +1,30 @@
+<AstroObjectEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd">
+  <ID>EXAMPLE</ID>
+  <Entry>
+    <ID>EXAMPLE_ENTRY_ONE</ID>
+    <Name>Example One</Name>
+    <Curiosity>EXAMPLE_CURIOSITY_ONE</Curiosity>
+    <RumorFact>
+      <ID>EXAMPLE_RUMOR</ID>
+      <SourceID>EXAMPLE_CURIOSITY_ONE</SourceID>
+      <RumorName>Rumor Example</RumorName>
+      <Text>This is some lame rumor text :3</Text>
+    </RumorFact>
+    <ExploreFact>
+      <ID>EXAMPLE_EXPLORE</ID>
+      <Text>Example of explore fact :3c</Text>
+    </ExploreFact>
+    <Entry>
+      <ID>EXAMPLE_ENTRY_CHILD</ID>
+      <Name>Child Entry</Name>
+      <ExploreFact>
+        <ID>EXAMPLE_EXPLORE_NESTED</ID>
+        <Text>Example of explore fact, in a child entry :3c</Text>
+      </ExploreFact>
+    </Entry>
+  </Entry>
+  <Entry>
+    <ID>EXAMPLE_ENTRY_TWO</ID>
+    <Name>Example Two</Name>
+  </Entry>
+</AstroObjectEntry>
