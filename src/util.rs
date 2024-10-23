@@ -4,6 +4,6 @@ macro_rules! quit {
         std::process::exit(1);
     }};
     () => {
-        std::process::quit(0);
+        std::process::exit(0);
     };
 }

@@ -3,25 +3,20 @@ use crate::*;
 pub fn validate_nomai_text_config(config: &ConfigFile) -> String {
     let mut nomai_text_blocks: Vec<NomaiTextBlock> = Vec::new();
     let mut shiplog_conditions: Vec<Conditions> = Vec::new();
-    let mut text_block_index = 0;
+    let mut loops = 0;
 
     if let Some(text_block) = &config.text_block {
         for block in text_block {
             nomai_text_blocks.push(NomaiTextBlock::default());
             match block.get("id") {
-                Some(id) => {
-                    nomai_text_blocks[text_block_index].id = id.as_integer().unwrap() as u16
-                }
+                Some(id) => nomai_text_blocks[loops].id = id.as_integer().unwrap() as u16,
                 None => quit!("ID required"),
             }
             if let Some(parent) = block.get("parent") {
-                nomai_text_blocks[text_block_index].parent =
-                    Some(parent.as_integer().unwrap() as u16)
+                nomai_text_blocks[loops].parent = Some(parent.as_integer().unwrap() as u16)
             }
             match block.get("text") {
-                Some(text) => {
-                    nomai_text_blocks[text_block_index].text = text.as_str().unwrap().to_owned()
-                }
+                Some(text) => nomai_text_blocks[loops].text = text.as_str().unwrap().to_owned(),
                 None => quit!("Text required"),
             }
             if let Some(loc) = block.get("location") {
@@ -30,13 +25,13 @@ pub fn validate_nomai_text_config(config: &ConfigFile) -> String {
                 for i in locations {
                     new_locations.push(i.as_str().unwrap().to_owned());
                 }
-                nomai_text_blocks[text_block_index].location = Some(new_locations);
+                nomai_text_blocks[loops].location = Some(new_locations);
             }
-            text_block_index += 1;
+            loops += 1;
         }
     }
 
-    let mut text_block_index = 0;
+    let mut loops = 0;
     if let Some(cond) = &config.log_condition {
         for block in cond {
             shiplog_conditions.push(Conditions::default());
@@ -49,7 +44,7 @@ pub fn validate_nomai_text_config(config: &ConfigFile) -> String {
                 for i in locations {
                     new_locations.push(i.as_str().unwrap().to_owned());
                 }
-                shiplog_conditions[text_block_index].location = Some(new_locations);
+                shiplog_conditions[loops].location = Some(new_locations);
             }
             if let Some(facts) = block.get("reveal_fact") {
                 if let Some(table) = facts.as_array() {
@@ -69,11 +64,11 @@ pub fn validate_nomai_text_config(config: &ConfigFile) -> String {
                             }
                             None => break,
                         }
-                        shiplog_conditions[text_block_index].reveal_fact.push(fact);
+                        shiplog_conditions[loops].reveal_fact.push(fact);
                     }
                 }
             }
-            text_block_index += 1;
+            loops += 1;
         }
     }
     generate_nomai_text_xml_string(config, (nomai_text_blocks, Some(shiplog_conditions)))

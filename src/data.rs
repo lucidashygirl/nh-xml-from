@@ -12,8 +12,8 @@ pub struct ConfigFile {
     pub id: Option<String>,
     pub entry: Option<Vec<Table>>,
     // DialogueTree
-    pub name_field: Option<Table>,
-    pub dialogue_node: Option<Table>,
+    pub name_field: Option<String>,
+    pub dialogue_node: Option<Vec<Table>>,
 }
 
 #[derive(Default, Debug)]
@@ -24,21 +24,16 @@ pub struct NomaiTextBlock {
     pub location: Option<Vec<String>>,
 }
 
-#[derive(Default, Debug)]
-pub struct DialogueTree {
-    pub name: String,
-    pub node: Vec<DialogueNode>,
-}
-
 #[derive(Default, Debug, Clone)]
 pub struct DialogueNode {
     pub name: String,
     pub randomize: Option<bool>,
-    pub entry_condition: Option<String>,
+    pub entry_condition: Option<Vec<String>>,
     pub dialogue: Option<Vec<Dialogue>>,
-    pub reveal_fact: Option<Vec<Fact>>,
+    pub reveal_facts: Option<RevealFacts>,
     pub set_persistent_condition: Option<String>,
     pub set_condition: Option<Vec<String>>,
+    pub disable_persistent_condition: Option<String>,
     pub dialogue_target_shiplog_condition: Option<Vec<String>>,
     pub dialogue_target: Option<String>,
     pub dialogue_options_list: Option<DialogueOptionsList>,
@@ -46,7 +41,7 @@ pub struct DialogueNode {
 
 #[derive(Default, Debug, Clone)]
 pub struct DialogueOptionsList {
-    pub dialogue_options: Option<Vec<DialogueOption>>,
+    pub dialogue_option: Option<Vec<DialogueOption>>,
     pub reuse_dialogue_options_list_from: Option<String>,
 }
 
@@ -114,4 +109,8 @@ pub struct ExploreFact {
 pub struct Conditions {
     pub reveal_fact: Vec<Fact>,
     pub location: Option<Vec<String>>,
+}
+#[derive(Debug, Default, Clone)]
+pub struct RevealFacts {
+    pub fact_id: Vec<String>,
 }
