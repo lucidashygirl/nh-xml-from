@@ -133,11 +133,15 @@ pub fn for_entry_config(
 
 pub fn generate_astro_object_xml_string(toml: &ConfigFile, blocks: AstroObjectEntry) -> String {
     let mut xml = String::new();
+    let schema = match &toml.schema {
+        Some(s) => s,
+        None => &"https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd".to_owned(),
+    };
     xml += format!(
-        r#"<{} xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{}">"#,
-        toml.file_type,
-        toml.schema
-    ).as_str();
+        r#"<AstroObjectEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{}">"#,
+        schema
+    )
+    .as_str();
     xml += format!("<ID>{}</ID>", blocks.id).as_str();
     if let Some(entries) = blocks.entry {
         xml += entry_convert_xml(entries).as_str();
@@ -148,6 +152,7 @@ pub fn generate_astro_object_xml_string(toml: &ConfigFile, blocks: AstroObjectEn
 
 pub fn entry_convert_xml(entries: Vec<Entry>) -> String {
     let mut xml = String::new();
+
     for entry in entries {
         xml += "<Entry>";
         xml += format!("<ID>{}</ID>", entry.id).as_str();

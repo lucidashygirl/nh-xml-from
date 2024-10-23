@@ -3,7 +3,7 @@ use toml::Table;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigFile {
-    pub schema: String,
+    pub schema: Option<String>,
     pub file_type: String,
     // NomaiObject
     pub text_block: Option<Vec<Table>>,

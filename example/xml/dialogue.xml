@@ -3,7 +3,7 @@
   <DialogueNode>
     <Name>START</Name>
     <Dialogue>
-      <Page>Hey it's me Ernesto the magic talking anglerfish</Page>
+      <Page>Hey it's me Ernesto the magic talking anglerfish.</Page>
     </Dialogue>
     <RevealFacts>
       <FactID>EXAMPLES_ERNESTO</FactID>

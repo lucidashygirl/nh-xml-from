@@ -37,7 +37,7 @@ fn main() {
 
     let toml_config: ConfigFile = match toml::from_str(contents.as_str()) {
         Ok(c) => c,
-        Err(err) => quit!(format!("Invalid Syntax:\n{}", err)),
+        Err(err) => quit!(format!("{}", err)),
     };
 
     let xml = validate_config(&toml_config);
