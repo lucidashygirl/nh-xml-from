@@ -1,6 +1,6 @@
 use crate::*;
 
-pub fn get_file_extention(file_name: &String) -> String {
+pub fn get_file_extention(file_name: &str) -> String {
     let mut extention_characters: Vec<char> = Vec::new();
     for character in file_name.chars().rev() {
         if character == '.' {
@@ -11,7 +11,7 @@ pub fn get_file_extention(file_name: &String) -> String {
     "".to_owned()
 }
 
-pub fn get_file_name(file_name: &String) -> String {
+pub fn get_file_name(file_name: &str) -> String {
     let mut name_chars: Vec<char> = Vec::new();
     let mut name = String::new();
     for character in file_name.chars().rev() {

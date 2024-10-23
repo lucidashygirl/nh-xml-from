@@ -11,7 +11,7 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
     match &config.dialogue_node {
         None => quit!("No dialogue nodes found"),
         Some(dialogue_node) => {
-            for (loops, node) in dialogue_node.iter().enumerate() {
+            for node in dialogue_node {
                 let mut dialogue_nodes = DialogueNode::default();
                 match node.get("name") {
                     None => quit!("No name in dialogue node"),
@@ -30,12 +30,15 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                     dialogue_nodes.randomize = Some(random.as_bool().unwrap())
                 }
                 if let Some(dialogue) = node.get("dialogue") {
+                    #[allow(for_loops_over_fallibles)]
                     for thing in dialogue.as_array() {
                         for d in thing {
                             let mut dialogue_vec: Vec<Dialogue> = Vec::new();
                             match d.get("page") {
                                 None => quit!("No page"),
-                                Some(pages) => {
+                                Some(pages) =>
+                                {
+                                    #[allow(for_loops_over_fallibles)]
                                     for page in pages.as_array() {
                                         let mut page_vec: Vec<String> = Vec::new();
                                         for p in page {
@@ -51,11 +54,14 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                 }
                 if let Some(reveal_facts) = node.get("reveal_facts") {
                     let mut revealfact = RevealFacts::default();
+                    #[allow(for_loops_over_fallibles)]
                     for facts in reveal_facts.as_array() {
                         for fact in facts {
                             match fact.get("fact_id") {
                                 None => quit!("No fact id"),
-                                Some(facts) => {
+                                Some(facts) =>
+                                {
+                                    #[allow(for_loops_over_fallibles)]
                                     for fact in facts.as_array() {
                                         let mut fact_vec: Vec<String> = Vec::new();
                                         for f in fact {
@@ -74,6 +80,7 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                         Some(spc.as_str().unwrap().to_string());
                 }
                 if let Some(set_condition) = node.get("set_condition") {
+                    #[allow(for_loops_over_fallibles)]
                     for conditions in set_condition.as_array() {
                         let mut cond: Vec<String> = Vec::new();
                         for condition in conditions {
@@ -89,6 +96,7 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                 if let Some(dialogue_target_ship_condition) =
                     node.get("dialogue_target_shiplog_condition")
                 {
+                    #[allow(for_loops_over_fallibles)]
                     for condition in dialogue_target_ship_condition.as_array() {
                         let mut cond_vec: Vec<String> = Vec::new();
                         for c in condition {
@@ -104,7 +112,9 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                 if let Some(dialogue_options_list) = node.get("dialogue_options_list") {
                     let mut opt = DialogueOptionsList::default();
                     let mut list: Vec<DialogueOption> = Vec::new();
+                    #[allow(for_loops_over_fallibles)]
                     for dialogue_options in dialogue_options_list.get("dialogue_option") {
+                        #[allow(for_loops_over_fallibles)]
                         for options in dialogue_options.as_array() {
                             for option in options {
                                 let mut dialogue_option = DialogueOption::default();
@@ -126,6 +136,7 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                                     dialogue_options.get("required_log_condition")
                                 {
                                     let mut conditions: Vec<String> = Vec::new();
+                                    #[allow(for_loops_over_fallibles)]
                                     for log_condition in required_log_condition.as_array() {
                                         for cond in log_condition {
                                             conditions.push(cond.as_str().unwrap().to_string());
@@ -138,6 +149,7 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                                     dialogue_options.get("required_persistent_condition")
                                 {
                                     let mut conditions: Vec<String> = Vec::new();
+                                    #[allow(for_loops_over_fallibles)]
                                     for log_condition in required_persistent_condition.as_array() {
                                         for cond in log_condition {
                                             conditions.push(cond.as_str().unwrap().to_string());
@@ -151,6 +163,7 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                                     dialogue_options.get("cancelled_persistent_condition")
                                 {
                                     let mut conditions: Vec<String> = Vec::new();
+                                    #[allow(for_loops_over_fallibles)]
                                     for log_condition in cancelled_persistent_condition.as_array() {
                                         for cond in log_condition {
                                             conditions.push(cond.as_str().unwrap().to_string());
