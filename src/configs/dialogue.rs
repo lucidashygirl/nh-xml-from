@@ -105,13 +105,14 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                     let mut opt = DialogueOptionsList::default();
                     let mut list: Vec<DialogueOption> = Vec::new();
                     for dialogue_options in dialogue_options_list.get("dialogue_option") {
-                        let mut dialogue_option = DialogueOption::default();
                         for options in dialogue_options.as_array() {
                             for option in options {
+                                let mut dialogue_option = DialogueOption::default();
                                 match option.get("text") {
                                     None => quit!("No text field in dialogue options"),
                                     Some(t) => {
-                                        dialogue_option.text = t.as_str().unwrap().to_string()
+                                        dialogue_option.text =
+                                            t.as_str().unwrap().to_string().clone()
                                     }
                                 }
                                 match option.get("dialogue_target") {
@@ -121,71 +122,77 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                                             Some(t.as_str().unwrap().to_string())
                                     }
                                 }
-                            }
-                        }
-
-                        if let Some(required_log_condition) =
-                            dialogue_options.get("required_log_condition")
-                        {
-                            let mut conditions: Vec<String> = Vec::new();
-                            for log_condition in required_log_condition.as_array() {
-                                for cond in log_condition {
-                                    conditions.push(cond.as_str().unwrap().to_string());
+                                if let Some(required_log_condition) =
+                                    dialogue_options.get("required_log_condition")
+                                {
+                                    let mut conditions: Vec<String> = Vec::new();
+                                    for log_condition in required_log_condition.as_array() {
+                                        for cond in log_condition {
+                                            conditions.push(cond.as_str().unwrap().to_string());
+                                        }
+                                    }
+                                    dialogue_option.required_log_condition = Some(conditions);
                                 }
-                            }
-                            dialogue_option.required_log_condition = Some(conditions);
-                        }
 
-                        if let Some(required_persistent_condition) =
-                            dialogue_options.get("required_persistent_condition")
-                        {
-                            let mut conditions: Vec<String> = Vec::new();
-                            for log_condition in required_persistent_condition.as_array() {
-                                for cond in log_condition {
-                                    conditions.push(cond.as_str().unwrap().to_string());
+                                if let Some(required_persistent_condition) =
+                                    dialogue_options.get("required_persistent_condition")
+                                {
+                                    let mut conditions: Vec<String> = Vec::new();
+                                    for log_condition in required_persistent_condition.as_array() {
+                                        for cond in log_condition {
+                                            conditions.push(cond.as_str().unwrap().to_string());
+                                        }
+                                    }
+                                    dialogue_option.required_persistent_condition =
+                                        Some(conditions);
                                 }
-                            }
-                            dialogue_option.required_persistent_condition = Some(conditions);
-                        }
 
-                        if let Some(cancelled_persistent_condition) =
-                            dialogue_options.get("cancelled_persistent_condition")
-                        {
-                            let mut conditions: Vec<String> = Vec::new();
-                            for log_condition in cancelled_persistent_condition.as_array() {
-                                for cond in log_condition {
-                                    conditions.push(cond.as_str().unwrap().to_string());
+                                if let Some(cancelled_persistent_condition) =
+                                    dialogue_options.get("cancelled_persistent_condition")
+                                {
+                                    let mut conditions: Vec<String> = Vec::new();
+                                    for log_condition in cancelled_persistent_condition.as_array() {
+                                        for cond in log_condition {
+                                            conditions.push(cond.as_str().unwrap().to_string());
+                                        }
+                                    }
+                                    dialogue_option.cancelled_persistent_condition =
+                                        Some(conditions);
                                 }
-                            }
-                            dialogue_option.cancelled_persistent_condition = Some(conditions);
-                        }
 
-                        if let Some(required_condition) = dialogue_options.get("required_condition")
-                        {
-                            dialogue_option.required_condition =
-                                Some(required_condition.as_str().unwrap().to_string());
+                                if let Some(required_condition) =
+                                    dialogue_options.get("required_condition")
+                                {
+                                    dialogue_option.required_condition =
+                                        Some(required_condition.as_str().unwrap().to_string());
+                                }
+                                if let Some(cancelled_condition) =
+                                    dialogue_options.get("cancelled_condition")
+                                {
+                                    dialogue_option.cancelled_condition =
+                                        Some(cancelled_condition.as_str().unwrap().to_string());
+                                }
+                                if let Some(dialogue_target) =
+                                    dialogue_options.get("dialogue_target")
+                                {
+                                    dialogue_option.dialogue_target =
+                                        Some(dialogue_target.as_str().unwrap().to_string());
+                                }
+                                if let Some(condition_to_set) =
+                                    dialogue_options.get("condition_to_set")
+                                {
+                                    dialogue_option.condition_to_set =
+                                        Some(condition_to_set.as_str().unwrap().to_string());
+                                }
+                                if let Some(condition_to_cancel) =
+                                    dialogue_options.get("condition_to_cancel")
+                                {
+                                    dialogue_option.condition_to_cancel =
+                                        Some(condition_to_cancel.as_str().unwrap().to_string());
+                                }
+                                list.push(dialogue_option);
+                            }
                         }
-                        if let Some(cancelled_condition) =
-                            dialogue_options.get("cancelled_condition")
-                        {
-                            dialogue_option.cancelled_condition =
-                                Some(cancelled_condition.as_str().unwrap().to_string());
-                        }
-                        if let Some(dialogue_target) = dialogue_options.get("dialogue_target") {
-                            dialogue_option.dialogue_target =
-                                Some(dialogue_target.as_str().unwrap().to_string());
-                        }
-                        if let Some(condition_to_set) = dialogue_options.get("condition_to_set") {
-                            dialogue_option.condition_to_set =
-                                Some(condition_to_set.as_str().unwrap().to_string());
-                        }
-                        if let Some(condition_to_cancel) =
-                            dialogue_options.get("condition_to_cancel")
-                        {
-                            dialogue_option.condition_to_cancel =
-                                Some(condition_to_cancel.as_str().unwrap().to_string());
-                        }
-                        list.push(dialogue_option);
                     }
                     opt.dialogue_option = Some(list);
                     if let Some(reused_list) =

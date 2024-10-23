@@ -10,6 +10,18 @@
     </RevealFacts>
     <DialogueOptionsList>
       <DialogueOption>
+        <Text>Wow you can talk?</Text>
+        <DialogueTarget>1</DialogueTarget>
+      </DialogueOption>
+      <DialogueOption>
+        <Text>What do you think about Geswaldo?</Text>
+        <DialogueTarget>2</DialogueTarget>
+      </DialogueOption>
+      <DialogueOption>
+        <Text>Where did you guys come from?</Text>
+        <DialogueTarget>3</DialogueTarget>
+      </DialogueOption>
+      <DialogueOption>
         <Text>I'll see you later.</Text>
         <DialogueTarget>4</DialogueTarget>
       </DialogueOption>
@@ -43,8 +55,7 @@
   <DialogueNode>
     <Name>3</Name>
     <Dialogue>
-      <Page>Me and Geswaldo were visiting my cousin on Wetrock, 
-  I don't know about the other two. I don't know those guys.</Page>
+      <Page>Geswaldo and I were visiting my cousin on Wetrock, I don't know about the other two. I don't know those guys.</Page>
     </Dialogue>
     <RevealFacts>
       <FactID>EXAMPLES_ERNESTO_COUSIN_RUMOR</FactID>

@@ -1,6 +1,6 @@
+# NOTE: The schema is optional, as it defaults to the file type's official schema
 schema = "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/dialogue_schema.xsd"
 file_type = "DialogueTree"
-
 name_field = "Ernesto"
 
 [[dialogue_node]]
@@ -8,7 +8,7 @@ name = "START"
 entry_condition = "DEFAULT"
 
 [[dialogue_node.dialogue]]
-page = ["Hey it's me Ernesto the magic talking anglerfish"]
+page = ["Hey it's me Ernesto the magic talking anglerfish."]
 
 [[dialogue_node.dialogue_options_list.dialogue_option]]
 text = "Wow you can talk?"
@@ -61,10 +61,7 @@ name = "3"
 
 [[dialogue_node.dialogue]]
 page = [
-  """
-  Me and Geswaldo were visiting my cousin on Wetrock, 
-  I don't know about the other two. I don't know those guys.
-  """
+  "Geswaldo and I were visiting my cousin on Wetrock, I don't know about the other two. I don't know those guys."
 ]
 
 [[dialogue_node.dialogue_options_list.dialogue_option]]
