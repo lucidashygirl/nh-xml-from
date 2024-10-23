@@ -28,6 +28,7 @@ This software has reached it's original goal for completion. Here's a list of po
 
 - Support for translating XML to TOML
 - A configuration file for more customization
+- Listen mode to update your XML as soon as your TOML changes
 
 ## Installation
 
