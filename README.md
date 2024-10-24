@@ -20,7 +20,7 @@ However, there are some things that are specific to the tool, such are the follo
 - Some other things that were originally strings are now different types in order to catch errors before the XML is generated.
   - `log_condition.reveal_fact.condition` is now an array of integers, since originally it was a string with text block ids
     separated by commas.
-  - Nothing else lmao.
+  - Any other fields that can be used multiple times are also wrapped in arrays
 
 ## Possible Updates
 
