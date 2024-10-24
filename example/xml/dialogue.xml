@@ -2,6 +2,7 @@
   <NameField>Ernesto</NameField>
   <DialogueNode>
     <Name>START</Name>
+    <EntryCondition>DEFAULT</EntryCondition>
     <Dialogue>
       <Page>Hey it's me Ernesto the magic talking anglerfish.</Page>
     </Dialogue>

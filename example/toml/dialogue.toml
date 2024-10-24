@@ -5,7 +5,7 @@ name_field = "Ernesto"
 
 [[dialogue_node]]
 name = "START"
-entry_condition = "DEFAULT"
+entry_condition = ["DEFAULT"]
 
 [[dialogue_node.dialogue]]
 page = ["Hey it's me Ernesto the magic talking anglerfish."]

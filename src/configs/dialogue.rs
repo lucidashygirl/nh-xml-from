@@ -25,6 +25,7 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                             parsed_conditions.push(c.as_str().unwrap().to_string());
                         }
                     }
+                    dialogue_nodes.entry_condition = Some(parsed_conditions);
                 }
                 if let Some(random) = node.get("randomize") {
                     dialogue_nodes.randomize = Some(random.as_bool().unwrap())
@@ -242,9 +243,9 @@ pub fn generate_dialogue_tree_xml_string(
         xml += "<DialogueNode>";
         xml += format!("<Name>{}</Name>", block.name).as_str();
 
-        if let Some(condition) = block.entry_condition {
-            for con in condition {
-                xml += format!("<EntryCondition>{}</EntryCondition>", con).as_str()
+        if let Some(conditions) = block.entry_condition {
+            for condition in conditions {
+                xml += format!("<EntryCondition>{}</EntryCondition>", condition).as_str()
             }
         }
 
