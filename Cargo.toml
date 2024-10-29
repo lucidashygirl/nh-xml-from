@@ -10,3 +10,7 @@ toml = "0.8.19"
 [dependencies.serde]
 version = "1.0.210"
 features = ["derive"]
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"

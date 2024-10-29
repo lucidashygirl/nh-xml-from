@@ -42,6 +42,7 @@ pub fn create_xml_byte_vector(xml: &str) -> Vec<u8> {
                 let mut elem = BytesStart::new("my_elem");
 
                 // collect existing attributes
+                #[allow(clippy::unwrap_used)] // you literally cant error here lol
                 elem.extend_attributes(e.attributes().map(|attr| attr.unwrap()));
 
                 // copy existing attributes, adds a new my-key="some value" attribute

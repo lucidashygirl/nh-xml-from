@@ -4,7 +4,7 @@ pub mod text_block;
 
 use crate::data::ConfigFile;
 use {
-    astro_object::validate_astral_object_config, dialogue::*,
+    astro_object::validate_astral_object_config, dialogue::validate_dialogue_tree_config,
     text_block::validate_nomai_text_config,
 };
 

@@ -17,7 +17,10 @@ pub fn validate_astral_object_config(config: &ConfigFile) -> String {
 
 pub fn validate_entry_config(config: &ConfigFile, entries: &Vec<Entry>) -> Vec<Entry> {
     match &config.entry {
-        Some(blocks) => for_entry_config(blocks, entries).unwrap(),
+        Some(blocks) => match for_entry_config(blocks, entries) {
+            Some(config) => config,
+            None => quit!("Invalid entry config.. apparently.."),
+        },
         None => quit!("No entries found"),
     }
 }
@@ -30,38 +33,69 @@ pub fn for_entry_config(
     for block in blocks {
         let mut entry_block = Entry::default();
         match block.get("id") {
-            Some(id) => entry_block.id = id.as_str().unwrap().to_string(),
+            Some(id) => {
+                entry_block.id = match id.as_str() {
+                    Some(id) => id.to_owned(),
+                    None => quit!("Invalid type for id, expected String"),
+                }
+            }
             None => quit!("ID required"),
         }
         match block.get("name") {
-            Some(name) => entry_block.name = name.as_str().unwrap().to_string(),
+            Some(name) => {
+                entry_block.name = match name.as_str() {
+                    Some(name) => name.to_owned(),
+                    None => quit!("Invalid type for name, expected String"),
+                }
+            }
             None => quit!("Name required"),
         }
         if let Some(curiosity) = block.get("curiosity") {
-            entry_block.curiosity = Some(curiosity.as_str().unwrap().to_string());
+            entry_block.curiosity = match curiosity.as_str() {
+                Some(c) => Some(c.to_owned()),
+                None => quit!(format!("Invalid type for curiosity, expected String")),
+            }
         }
         if let Some(is_curiosity) = block.get("is_curiosity") {
-            entry_block.is_curiosity = is_curiosity.as_bool();
+            entry_block.is_curiosity = match is_curiosity.as_bool() {
+                Some(b) => Some(b),
+                None => {
+                    quit!("Invalid type for is_curiosity, expected Boolean")
+                }
+            };
         }
         if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
-            entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+            entry_block.ignore_more_to_explore = match ignore_more_to_explore.as_bool() {
+                Some(b) => Some(b),
+                None => {
+                    quit!("Invalid type for ignore_more_to_explore, expected Boolean")
+                }
+            };
         }
         if let Some(parent_ignore_not_revealed) = block.get("parent_ignore_not_revealed") {
-            entry_block.parent_ignore_not_revealed = parent_ignore_not_revealed.as_bool();
+            entry_block.parent_ignore_not_revealed = match parent_ignore_not_revealed.as_bool() {
+                Some(b) => Some(b),
+                None => {
+                    quit!("Invalid type for parent_ignore_not_revealed, expected Boolean")
+                }
+            };
         }
         if let Some(ignore_more_to_explore_condition) =
             block.get("ignore_more_to_explore_condition")
         {
-            entry_block.ignore_more_to_explore_condition = Some(
-                ignore_more_to_explore_condition
-                    .as_str()
-                    .unwrap()
-                    .to_string(),
-            );
+            entry_block.ignore_more_to_explore_condition =
+                match ignore_more_to_explore_condition.as_str() {
+                    Some(i) => Some(i.to_owned()),
+                    None => {
+                        quit!("Invalid type for ignore_more_to_explore_condition, expected String.")
+                    }
+                };
         }
         if let Some(alt_photo_condition) = block.get("alt_photo_condition") {
-            entry_block.alt_photo_condition =
-                Some(alt_photo_condition.as_str().unwrap().to_string());
+            entry_block.alt_photo_condition = match alt_photo_condition.as_str() {
+                Some(a) => Some(a.to_owned()),
+                None => quit!("Invalid type for alt_photo_condition, expected String"),
+            }
         }
         if let Some(rumor_facts) = block.get("rumor_fact") {
             let mut facts: Vec<RumorFact> = Vec::new();
@@ -70,24 +104,53 @@ pub fn for_entry_config(
                 for fact in rumor_fact {
                     let mut rumor = RumorFact::default();
                     match fact.get("id") {
-                        Some(id) => rumor.id = id.as_str().unwrap().to_string(),
+                        Some(id) => {
+                            rumor.id = match id.as_str() {
+                                Some(i) => i.to_owned(),
+                                None => quit!("Invalid type for rumor_fact.id, expected String."),
+                            }
+                        }
                         None => quit!("ID required"),
                     }
                     match fact.get("text") {
-                        Some(text) => rumor.text = text.as_str().unwrap().to_string(),
+                        Some(text) => {
+                            rumor.text = match text.as_str() {
+                                Some(t) => t.to_owned(),
+                                None => quit!("Invalid type for rumor_fact.text, expected String."),
+                            }
+                        }
                         None => quit!("Text required"),
                     }
                     if let Some(source_id) = fact.get("source_id") {
-                        rumor.source_id = Some(source_id.as_str().unwrap().to_string());
+                        rumor.source_id = match source_id.as_str() {
+                            Some(s) => Some(s.to_owned()),
+                            None => quit!("Invalid type for rumor_fact.source_id, expected String"),
+                        }
                     }
                     if let Some(rumor_name) = fact.get("rumor_name") {
-                        rumor.rumor_name = Some(rumor_name.as_str().unwrap().to_string());
+                        rumor.rumor_name = match rumor_name.as_str() {
+                            Some(r) => Some(r.to_owned()),
+                            None => {
+                                quit!("Invalid type for rumor_fact.rumor_name, expected String")
+                            }
+                        }
                     }
                     if let Some(rumor_name_priority) = fact.get("rumor_name_priority") {
-                        rumor.rumor_name_priority = Some(rumor_name_priority.as_integer().unwrap());
+                        rumor.rumor_name_priority = match rumor_name_priority.as_integer() {
+                            Some(i) => Some(i),
+                            None => quit!(
+                                "Invalid type for rumor_fact.rumor_name_priority, expected Integer"
+                            ),
+                        };
                     }
                     if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
-                        entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+                        entry_block.ignore_more_to_explore = match ignore_more_to_explore.as_bool()
+                        {
+                            Some(b) => Some(b),
+                            None => {
+                                quit!("Invalid type for rumor_fact.ignore_more_to_explore, expected Boolean")
+                            }
+                        };
                     }
                     facts.push(rumor);
                 }
@@ -101,15 +164,30 @@ pub fn for_entry_config(
                 for fact in explore_fact {
                     let mut explore = ExploreFact::default();
                     match fact.get("id") {
-                        Some(id) => explore.id = id.as_str().unwrap().to_string(),
+                        Some(id) => {
+                            explore.id = match id.as_str() {
+                                Some(i) => i.to_owned(),
+                                None => quit!("Invalid type for explore_fact.id, expected String"),
+                            }
+                        }
                         None => quit!("ID required"),
                     }
                     match fact.get("text") {
-                        Some(text) => explore.text = text.as_str().unwrap().to_string(),
+                        Some(text) => {
+                            explore.text = match text.as_str() {
+                                Some(t) => t.to_owned(),
+                                None => {
+                                    quit!("Invalid type for explore_fact.text, expected String")
+                                }
+                            }
+                        }
                         None => quit!("Text required"),
                     }
                     if let Some(ignore_more_to_explore) = block.get("ignore_more_to_explore") {
-                        entry_block.ignore_more_to_explore = ignore_more_to_explore.as_bool();
+                        entry_block.ignore_more_to_explore = match ignore_more_to_explore.as_bool() {
+                            Some(b) => Some(b),
+                            None => quit!("Invalid type for explore_fact.ignore_more_to_explore, expected Boolean"),
+                        };
                     }
                     facts.push(explore);
                 }
@@ -121,7 +199,13 @@ pub fn for_entry_config(
             #[allow(for_loops_over_fallibles)]
             for thing in e.as_array() {
                 for t in thing {
-                    local_entries.push(t.as_table().unwrap().clone())
+                    let entry = match t.as_table() {
+                        Some(e) => e.clone(),
+                        None => {
+                            quit!("Idk what to put here lol, something is wrong with your entries")
+                        }
+                    };
+                    local_entries.push(entry)
                 }
             }
             entry_block.entry = for_entry_config(&local_entries, entry_vec);

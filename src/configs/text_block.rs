@@ -9,7 +9,12 @@ pub fn validate_nomai_text_config(config: &ConfigFile) -> String {
         for block in text_block {
             nomai_text_blocks.push(NomaiTextBlock::default());
             match block.get("id") {
-                Some(id) => nomai_text_blocks[loops].id = id.as_integer().unwrap() as u16,
+                Some(id) => {
+                    nomai_text_blocks[loops].id = match id.as_integer() {
+                        Some(id) => id as u16,
+                        None => quit!("Invalid type for id!"),
+                    }
+                }
                 None => quit!("ID required"),
             }
             if let Some(parent) = block.get("parent") {

@@ -1,0 +1,5 @@
+file_type = 7 # caught by the parser
+
+[[text_block]]
+id = "one"
+text = "My ID isnt valid"

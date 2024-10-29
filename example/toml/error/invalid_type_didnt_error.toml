@@ -1,0 +1,6 @@
+file_type = "AstroObjectEntry"
+id = "ERROR"
+
+[[entry]]
+id = 3 # invalid type, not caught by the toml parser unfortunately
+name = "NAME"

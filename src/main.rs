@@ -12,8 +12,10 @@ use {configs::*, data::*, files::*};
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() <= 1 {
-        quit!("No arguments provided");
+    match args.len() {
+        0..=1 => quit!("No arguments provided"),
+        2 => (),
+        _ => quit!("Too many arguments provided"),
     }
 
     let file_path = &args[1];
@@ -46,10 +48,11 @@ fn main() {
 
     let mut file = match File::create(format!("{}xml", name)) {
         Ok(f) => f,
-        Err(_) => quit!("Could not create file"),
+        Err(err) => quit!(format!("Could not create file:\n{}", err)),
     };
 
-    if file.write_all(&result).is_err() {
-        quit!("Failed to write to file")
+    match file.write_all(&result) {
+        Ok(_) => (),
+        Err(err) => quit!(format!("Failed to write to file:\n{}", err)),
     }
 }
