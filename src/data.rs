@@ -18,8 +18,8 @@ pub struct ConfigFile {
 
 #[derive(Default, Debug)]
 pub struct NomaiTextBlock {
-    pub id: u16,
-    pub parent: Option<u16>,
+    pub id: i64,
+    pub parent: Option<i64>,
     pub text: String,
     pub location: Option<Vec<String>>,
 }
