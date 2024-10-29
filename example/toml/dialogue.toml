@@ -6,6 +6,9 @@ name_field = "Ernesto"
 [[dialogue_node]]
 name = "START"
 entry_condition = ["DEFAULT"]
+reveal_facts.fact_id = [
+  "EXAMPLES_ERNESTO"
+]
 
 [[dialogue_node.dialogue]]
 page = ["Hey it's me Ernesto the magic talking anglerfish."]
@@ -26,10 +29,6 @@ dialogue_target = "3"
 text = "I'll see you later."
 dialogue_target = "4"
 
-[[dialogue_node.reveal_facts]]
-fact_id = [
-  "EXAMPLES_ERNESTO"
-]
 
 [[dialogue_node]]
 name = "1"
@@ -58,6 +57,9 @@ dialogue_target = "START"
 
 [[dialogue_node]]
 name = "3"
+reveal_facts.fact_id = [
+  "EXAMPLES_ERNESTO_COUSIN_RUMOR"
+]
 
 [[dialogue_node.dialogue]]
 page = [
@@ -68,10 +70,6 @@ page = [
 text = "Thanks for the info."
 dialogue_target = "START"
 
-[[dialogue_node.reveal_facts]]
-fact_id = [
-  "EXAMPLES_ERNESTO_COUSIN_RUMOR"
-]
 
 [[dialogue_node]]
 name = "4"

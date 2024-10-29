@@ -12,6 +12,7 @@
     </RumorFact>
     <ExploreFact>
       <ID>EXAMPLE_EXPLORE</ID>
+      <IgnoreMoreToExplore />
       <Text>Example of explore fact :3c</Text>
     </ExploreFact>
     <Entry>

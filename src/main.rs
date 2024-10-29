@@ -1,8 +1,10 @@
 use quick_xml::{events::*, reader::*, writer::*};
+use serde::Deserialize;
 use std::{env, fs::*, io::*};
 
 #[macro_use]
 mod util;
+
 mod configs;
 mod data;
 mod files;
@@ -37,12 +39,14 @@ fn main() {
         Err(_) => quit!("Couldn't convert to a string."),
     };
 
-    let toml_config: ConfigFile = match toml::from_str(contents.as_str()) {
-        Ok(c) => c,
-        Err(err) => quit!(format!("{}", err)),
+    let toml_opt = ConfigFile::deserialize(toml::de::Deserializer::new(contents.as_str()));
+
+    let toml = match toml_opt {
+        Ok(t) => t,
+        Err(e) => quit!(format!("Errors in toml config:\n{}", e)),
     };
 
-    let xml = validate_config(&toml_config);
+    let xml = create_xml(&toml);
 
     let result = create_xml_byte_vector(xml.as_str());
 

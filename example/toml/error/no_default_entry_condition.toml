@@ -3,6 +3,8 @@ name_field = "Softlock"
 
 [[dialogue_node]]
 id = "START"
-entry_condition = "DEFALT" # Typo you may make
+name = "NAME"
+entry_condition = ["DEFALT"] # Typo you may make
+
 [[dialogue_node.dialogue]]
 page = ["Unreachable, since you're stuck before this"]

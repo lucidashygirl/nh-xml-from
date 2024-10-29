@@ -5,7 +5,10 @@ edition = "2021"
 
 [dependencies]
 quick-xml = "0.36.2"
-toml = "0.8.19"
+
+[dependencies.toml]
+version = "0.8.19"
+features = ["parse"]
 
 [dependencies.serde]
 version = "1.0.210"

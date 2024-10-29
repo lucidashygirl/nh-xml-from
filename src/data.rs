@@ -1,22 +1,21 @@
 use serde::Deserialize;
-use toml::Table;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigFile {
     pub schema: Option<String>,
     pub file_type: String,
     // NomaiObject
-    pub text_block: Option<Vec<Table>>,
-    pub log_condition: Option<Vec<Table>>,
+    pub text_block: Option<Vec<NomaiTextBlock>>,
+    pub log_condition: Option<Vec<Conditions>>,
     // AstralObject
     pub id: Option<String>,
-    pub entry: Option<Vec<Table>>,
+    pub entry: Option<Vec<Entry>>,
     // DialogueTree
     pub name_field: Option<String>,
-    pub dialogue_node: Option<Vec<Table>>,
+    pub dialogue_node: Option<Vec<DialogueNode>>,
 }
 
-#[derive(Default, Debug)]
+#[derive(Deserialize, Default, Debug)]
 pub struct NomaiTextBlock {
     pub id: i64,
     pub parent: Option<i64>,
@@ -24,7 +23,7 @@ pub struct NomaiTextBlock {
     pub location: Option<Vec<String>>,
 }
 
-#[derive(Default, Debug, Clone)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct DialogueNode {
     pub name: String,
     pub randomize: Option<bool>,
@@ -39,13 +38,13 @@ pub struct DialogueNode {
     pub dialogue_options_list: Option<DialogueOptionsList>,
 }
 
-#[derive(Default, Debug, Clone)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct DialogueOptionsList {
     pub dialogue_option: Option<Vec<DialogueOption>>,
     pub reuse_dialogue_options_list_from: Option<String>,
 }
 
-#[derive(Default, Debug, Clone)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct DialogueOption {
     pub text: String,
     pub required_log_condition: Option<Vec<String>>,
@@ -58,18 +57,12 @@ pub struct DialogueOption {
     pub condition_to_cancel: Option<String>,
 }
 
-#[derive(Default, Debug, Clone)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct Dialogue {
     pub page: Vec<String>,
 }
 
-#[derive(Default, Debug)]
-pub struct AstroObjectEntry {
-    pub id: String,
-    pub entry: Option<Vec<Entry>>,
-}
-
-#[derive(Default, Debug, Clone)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct Entry {
     pub id: String,
     pub name: String,
@@ -84,13 +77,13 @@ pub struct Entry {
     pub entry: Option<Vec<Entry>>,
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Deserialize, Debug, Default, Clone)]
 pub struct Fact {
     pub id: String,
-    pub condition: Vec<String>,
+    pub condition: Vec<i64>,
 }
 
-#[derive(Default, Debug, Clone)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct RumorFact {
     pub id: String,
     pub text: String,
@@ -99,18 +92,21 @@ pub struct RumorFact {
     pub rumor_name_priority: Option<i64>,
     pub ignore_more_to_explore: Option<bool>,
 }
-#[derive(Default, Debug, Clone)]
+
+#[derive(Deserialize, Default, Debug, Clone)]
 pub struct ExploreFact {
     pub id: String,
     pub text: String,
     pub ignore_more_to_explore: Option<bool>,
 }
-#[derive(Debug, Default)]
+
+#[derive(Deserialize, Debug, Default)]
 pub struct Conditions {
     pub reveal_fact: Vec<Fact>,
     pub location: Option<Vec<String>>,
 }
-#[derive(Debug, Default, Clone)]
+
+#[derive(Deserialize, Debug, Default, Clone)]
 pub struct RevealFacts {
     pub fact_id: Vec<String>,
 }
