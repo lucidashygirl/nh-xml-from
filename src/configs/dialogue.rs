@@ -329,7 +329,6 @@ pub fn validate_dialogue_tree_config(config: &ConfigFile) -> String {
                         dialogue_options_list.get("reuse_dialogue_options_list_from")
                     {
                         opt.reuse_dialogue_options_list_from =
-                            Some(reused_list.as_str().unwrap().to_string());
                         match reused_list.as_str() {
                             Some(c) => Some(c.to_owned()),
                             None => quit!(format!("Invalid type for dialogue_node[{}].dialogue_options_list.reuse_dialogue_options_list_from, expected String", root_loops))
