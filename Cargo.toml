@@ -7,7 +7,6 @@ description = "A tool that lets you convert various formats to XML for New Horiz
 readme = "README.md"
 repository = "https://github.com/lucidashygirl/nh-xml-from"
 license = "MIT"
-license-file = "LICENSE"
 keywords = ["modding", "outer-wilds", "new-horizons", "cli"]
 categories = ["command-line-utilities", "filesystem", "config"]
 
