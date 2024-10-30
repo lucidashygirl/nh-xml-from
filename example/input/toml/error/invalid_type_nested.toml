@@ -1,6 +1,0 @@
-file_type = "AstroObjectEntry"
-id = "ERROR"
-
-[[entry]]
-id = 3 # invalid type
-name = "NAME"

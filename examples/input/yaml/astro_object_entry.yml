@@ -1,0 +1,25 @@
+---
+file_type: AstroObjectEntry
+id: EXAMPLE
+entry:
+- curiosity: EXAMPLE_CURIOSITY_ONE
+  id: EXAMPLE_ENTRY_ONE
+  name: Example One
+  entry:
+  - id: EXAMPLE_ENTRY_CHILD
+    name: Child Entry
+    explore_fact:
+    - id: EXAMPLE_EXPLORE_NESTED
+      ignore_more_to_explore: false
+      text: Example of explore fact, in a child entry :3c
+  explore_fact:
+  - id: EXAMPLE_EXPLORE
+    ignore_more_to_explore: true
+    text: Example of explore fact :3c
+  rumor_fact:
+  - id: EXAMPLE_RUMOR
+    rumor_name: Rumor Example
+    source_id: EXAMPLE_CURIOSITY_ONE
+    text: This is some lame rumor text :3
+- id: EXAMPLE_ENTRY_TWO
+  name: Example Two

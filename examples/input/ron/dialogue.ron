@@ -1,0 +1,114 @@
+(
+  file_type: "DialogueTree",
+  name_field: "Ernesto",
+  dialogue_node: [
+    (
+      entry_condition: [
+        "DEFAULT"
+      ],
+      name: "START",
+      dialogue: [
+        (
+          page: [
+            "Hey it's me Ernesto the magic talking anglerfish."
+          ]
+        )
+      ],
+      dialogue_options_list: (
+        dialogue_option: [
+          (
+            dialogue_target: "1",
+            text: "Wow you can talk?"
+          ),
+          (
+            dialogue_target: "2",
+            text: "What do you think about Geswaldo?"
+          ),
+          (
+            dialogue_target: "3",
+            text: "Where did you guys come from?"
+          ),
+          (
+            dialogue_target: "4",
+            text: "I'll see you later."
+          )
+        ]
+      ),
+      "reveal_facts: {
+        "fact_id: [
+          "EXAMPLES_ERNESTO"
+        ]
+      )
+    ),
+    (
+      name: "1",
+      dialogue: [
+        (
+          page: [
+            "No I can't, you must be mistaken.",
+            "Haha that's a joke. I took speaking as an elective in college."
+          ]
+        )
+      ],
+      dialogue_options_list: {
+        dialogue_option: [
+          (
+            dialogue_target: "START",
+            text: "Oh."
+          )
+        ]
+      )
+    ),
+    (
+      name: "2",
+      dialogue: [
+        {
+          page: [
+            "I love him. He is my husband."
+          ]
+        )
+      ],
+      dialogue_options_list: {
+        dialogue_option: [
+          (
+            dialogue_target: "START",
+            text: "That's beautiful. I'm so happy for both of you."
+          )
+        ]
+      )
+    ),
+    (
+      name: "3",
+      dialogue: [
+        (
+          page: [
+            "Geswaldo and I were visiting my cousin on Wetrock, I don't know about the other two. I don't know those guys."
+          ]
+        )
+      ],
+      dialogue_options_list: {
+        dialogue_option: [
+          (
+            dialogue_target: "START",
+            text: "Thanks for the info."
+          )
+        ]
+      ),
+      reveal_facts: (
+        fact_id: [
+          "EXAMPLES_ERNESTO_COUSIN_RUMOR"
+        ]
+      )
+    ),
+    {
+      name: "4",
+      dialogue: [
+        (
+          page: [
+            "Bye bye."
+          ]
+        )
+      ]
+    )
+  ]
+)
