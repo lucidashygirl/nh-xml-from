@@ -1,5 +1,4 @@
 use quick_xml::{events::*, reader::*, writer::*};
-use serde::Deserialize;
 use std::{env, fs::*, io::*};
 
 #[macro_use]
@@ -28,10 +27,14 @@ fn main() {
 
     let file_name = get_file_name(file_path);
     let extention = get_file_extention(&file_name);
+    let extention_enum = match extention.as_str() {
+        "toml" => FileExtention::Toml,
+        "json" => FileExtention::Json,
+        "yaml" | "yml" => FileExtention::Yaml,
+        "ron" => FileExtention::Ron,
+        _ => quit!("Incorrect Format!"),
+    };
     let name = file_name.replace(&extention, "");
-    if extention.as_str() != "toml" {
-        quit!("Incorrect Format!");
-    }
 
     let mut contents: String = String::new();
     match config.read_to_string(&mut contents) {
@@ -39,14 +42,14 @@ fn main() {
         Err(_) => quit!("Couldn't convert to a string."),
     };
 
-    let toml_opt = ConfigFile::deserialize(toml::de::Deserializer::new(contents.as_str()));
-
-    let toml = match toml_opt {
-        Ok(t) => t,
-        Err(e) => quit!(format!("Errors in toml config:\n{}", e)),
+    let parsed_config: ConfigFile = match extention_enum {
+        FileExtention::Toml => config_from_toml(&contents),
+        FileExtention::Json => config_from_json(&contents),
+        FileExtention::Yaml => config_from_yaml(&contents),
+        FileExtention::Ron => config_from_ron(&contents),
     };
 
-    let xml = create_xml(&toml);
+    let xml = create_xml(&parsed_config);
 
     let result = create_xml_byte_vector(xml.as_str());
 

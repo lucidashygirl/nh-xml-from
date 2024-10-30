@@ -1,5 +1,12 @@
 use serde::Deserialize;
 
+pub enum FileExtention {
+    Toml,
+    Json,
+    Ron,
+    Yaml,
+}
+
 #[derive(Deserialize, Debug)]
 pub struct ConfigFile {
     pub schema: Option<String>,

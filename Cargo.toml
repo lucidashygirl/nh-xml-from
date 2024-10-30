@@ -5,6 +5,9 @@ edition = "2021"
 
 [dependencies]
 quick-xml = "0.36.2"
+ron = "0.8.1"
+serde_json = "1.0.132"
+serde_yml = "0.0.12"
 
 [dependencies.toml]
 version = "0.8.19"
