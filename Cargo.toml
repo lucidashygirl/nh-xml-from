@@ -2,6 +2,14 @@
 name = "nh-xml-from"
 version = "1.2.0"
 edition = "2021"
+authors = ["Luci <lucidashygirl@proton.me>"]
+description = "A tool that lets you convert various formats to XML for New Horizons"
+readme = "README.md"
+repository = "https://github.com/lucidashygirl/nh-xml-from"
+license = "MIT"
+license-file = "LICENSE"
+keywords = ["modding", "outer-wilds", "new-horizons", "cli"]
+categories = ["command-line-utilities", "filesystem", "config"]
 
 [dependencies]
 quick-xml = "0.36.2"
