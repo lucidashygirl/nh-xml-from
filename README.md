@@ -10,6 +10,9 @@ Run the command in the directory you would like the XML file to generate at.
 
 ## Formatting
 
+[NomaiObject](https://nh.outerwildsmods.com/schemas/text-schema/), [DialogueTree](https://nh.outerwildsmods.com/schemas/dialogue-schema/), and
+[AstroObjectEntry](https://nh.outerwildsmods.com/schemas/shiplog-schema/) documentation.
+
 Here are guides for each supported format:
 
 - [toml](https://toml.io/en/v1.0.0) 
