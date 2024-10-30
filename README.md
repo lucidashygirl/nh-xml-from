@@ -1,4 +1,4 @@
-# nh-toml-from
+# nh-xml-from
 A tool that lets you convert TOML, JSON, YAML, and RON to XML for New Horizons
 
 ## Usage
