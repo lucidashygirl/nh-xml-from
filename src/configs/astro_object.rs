@@ -4,13 +4,17 @@ pub fn generate_astro_object_xml_string(toml: &ConfigFile) -> String {
     let mut xml = String::new();
     let schema = match &toml.schema {
         Some(s) => s,
-        None => &"https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd".to_owned(),
+        None => "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd",
     };
     xml += format!(
         r#"<AstroObjectEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{schema}">"#
     )
     .as_str();
-    if let Some(id) = &toml.id { xml += format!("<ID>{id}</ID>").as_str() } else { quit!("Field id required for AstroObjectEntry") }
+    if let Some(id) = &toml.id {
+        xml += format!("<ID>{id}</ID>").as_str();
+    } else {
+        quit!("Field id required for AstroObjectEntry")
+    }
     if let Some(entries) = &toml.entry {
         xml += entry_convert_xml(entries).as_str();
     }
@@ -50,10 +54,7 @@ pub fn entry_convert_xml(entries: &[Entry]) -> String {
             .as_str();
         }
         if let Some(alt_photo_condition) = &entry.alt_photo_condition {
-            xml += format!(
-                "<AltPhotoCondition>{alt_photo_condition}</AltPhotoCondition>"
-            )
-            .as_str();
+            xml += format!("<AltPhotoCondition>{alt_photo_condition}</AltPhotoCondition>").as_str();
         }
         if let Some(rumor_fact) = &entry.rumor_fact {
             for rumor in rumor_fact {
@@ -72,10 +73,8 @@ pub fn entry_convert_xml(entries: &[Entry]) -> String {
                 }
                 xml += format!("<Text>{}</Text>", rumor.text).as_str();
                 if let Some(rumor_name_priority) = rumor.rumor_name_priority {
-                    xml += format!(
-                        "<RumorNamePriority>{rumor_name_priority}</RumorNamePriority>"
-                    )
-                    .as_str();
+                    xml += format!("<RumorNamePriority>{rumor_name_priority}</RumorNamePriority>")
+                        .as_str();
                 }
                 xml += "</RumorFact>";
             }

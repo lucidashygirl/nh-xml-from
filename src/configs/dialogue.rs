@@ -5,7 +5,7 @@ pub fn generate_dialogue_tree_xml_string(toml: &ConfigFile) -> String {
     let mut xml = String::new();
     let schema = match &toml.schema {
         Some(s) => s,
-        None => &"https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/dialogue_schema.xsd".to_owned(),
+        None => "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/dialogue_schema.xsd",
     };
     xml += format!(
         r#"<DialogueTree xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{schema}">"#

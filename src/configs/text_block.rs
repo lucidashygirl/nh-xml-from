@@ -4,7 +4,7 @@ pub fn generate_nomai_text_xml_string(toml: &ConfigFile) -> String {
     let mut xml = String::new();
     let schema = match &toml.schema {
         Some(s) => s,
-        None => &"https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/refs/heads/main/NewHorizons/Schemas/text_schema.xsd".to_owned(),
+        None => "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/refs/heads/main/NewHorizons/Schemas/text_schema.xsd",
     };
     xml += format!(
         r#"<{} xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{}">"#,
