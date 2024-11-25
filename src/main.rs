@@ -1,5 +1,13 @@
-use quick_xml::{events::*, reader::*, writer::*};
-use std::{env, fs::*, io::*};
+use quick_xml::{
+    events::{BytesEnd, BytesStart, Event},
+    reader::Reader,
+    writer::Writer,
+};
+use std::{
+    env,
+    fs::File,
+    io::{Cursor, Read, Write},
+};
 
 #[macro_use]
 mod util;
@@ -8,7 +16,11 @@ mod configs;
 mod data;
 mod files;
 
-use {configs::*, data::*, files::*};
+use {
+    configs::{config_from_json, config_from_ron, config_from_toml, config_from_yaml, create_xml},
+    data::{Conditions, ConfigFile, Entry, FileExtention, NomaiTextBlock},
+    files::{create_xml_byte_vector, get_file_extention, get_file_name},
+};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -20,11 +32,9 @@ fn main() {
     }
 
     let file_path = &args[1];
-    let mut config = match File::open(file_path) {
-        Ok(c) => c,
-        Err(_) => quit!("File doesn't exist"),
+    let Ok(mut config) = File::open(file_path) else {
+        quit!("File doesn't exist")
     };
-
     let file_name = get_file_name(file_path);
     let extention = get_file_extention(&file_name);
     let extention_enum = match extention.as_str() {
@@ -37,9 +47,10 @@ fn main() {
     let name = file_name.replace(&extention, "");
 
     let mut contents: String = String::new();
-    match config.read_to_string(&mut contents) {
-        Ok(c) => c,
-        Err(_) => quit!("Couldn't convert to a string."),
+    if let Ok(c) = config.read_to_string(&mut contents) {
+        c
+    } else {
+        quit!("Couldn't convert to a string.")
     };
 
     let parsed_config: ConfigFile = match extention_enum {
@@ -53,13 +64,13 @@ fn main() {
 
     let result = create_xml_byte_vector(xml.as_str());
 
-    let mut file = match File::create(format!("{}xml", name)) {
+    let mut file = match File::create(format!("{name}xml")) {
         Ok(f) => f,
         Err(err) => quit!(format!("Could not create file:\n{}", err)),
     };
 
     match file.write_all(&result) {
-        Ok(_) => (),
+        Ok(()) => (),
         Err(err) => quit!(format!("Failed to write to file:\n{}", err)),
     }
 }

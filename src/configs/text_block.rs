@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{Conditions, ConfigFile, NomaiTextBlock};
 
 pub fn generate_nomai_text_xml_string(toml: &ConfigFile) -> String {
     let mut xml = String::new();
@@ -28,7 +28,7 @@ fn get_text_blocks(mut xml: String, text_blocks: &[NomaiTextBlock]) -> String {
         xml += "<TextBlock>";
         xml += format!("<ID>{}</ID>", block.id).as_str();
         if let Some(parent) = block.parent {
-            xml += format!("<ParentID>{}</ParentID>", parent).as_str();
+            xml += format!("<ParentID>{parent}</ParentID>").as_str();
         };
         if let Some(location) = &block.location {
             for loc in location {

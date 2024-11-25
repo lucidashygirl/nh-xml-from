@@ -69,6 +69,7 @@ pub struct Dialogue {
     pub page: Vec<String>,
 }
 
+#[allow(clippy::struct_field_names)]
 #[derive(Deserialize, Default, Debug, Clone)]
 pub struct Entry {
     pub id: String,

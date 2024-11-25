@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{BytesEnd, BytesStart, Cursor, Event, Reader, Writer};
 
 pub fn get_file_extention(file_name: &str) -> String {
     let mut extention_characters: Vec<char> = Vec::new();
@@ -8,7 +8,7 @@ pub fn get_file_extention(file_name: &str) -> String {
         }
         extention_characters.push(character);
     }
-    "".to_owned()
+    String::new()
 }
 
 pub fn get_file_name(file_name: &str) -> String {
