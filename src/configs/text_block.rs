@@ -1,11 +1,10 @@
 use crate::{Conditions, ConfigFile, NomaiTextBlock};
 
+const DEFAULT_SCHEMA: &str = "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/text_schema.xsd";
+
 pub fn generate_nomai_text_xml_string(toml: &ConfigFile) -> String {
     let mut xml = String::new();
-    let schema = match &toml.schema {
-        Some(s) => s,
-        None => "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/refs/heads/main/NewHorizons/Schemas/text_schema.xsd",
-    };
+    let schema = toml.schema.as_ref().map_or(DEFAULT_SCHEMA, |s| s);
     xml += format!(
         r#"<{} xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{}">"#,
         toml.file_type,

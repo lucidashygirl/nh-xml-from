@@ -1,11 +1,10 @@
 use crate::{ConfigFile, Entry};
 
+const DEFAULT_SCHEMA: &str = "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd";
+
 pub fn generate_astro_object_xml_string(toml: &ConfigFile) -> String {
     let mut xml = String::new();
-    let schema = match &toml.schema {
-        Some(s) => s,
-        None => "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd",
-    };
+    let schema = toml.schema.as_ref().map_or(DEFAULT_SCHEMA, |s| s);
     xml += format!(
         r#"<AstroObjectEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{schema}">"#
     )
