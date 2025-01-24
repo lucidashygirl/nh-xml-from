@@ -26,7 +26,7 @@ pub fn generate_dialogue_tree_xml_string(toml: &ConfigFile) -> String {
             }
         }
         if !default_condition {
-            quit!("ERROR: No default condition in dialogue_node")
+            println!("WARNING: No default condition in dialogue_node")
         }
         for block in dialogue_node {
             xml += for_block_in_dialogue_node(block).as_str();
