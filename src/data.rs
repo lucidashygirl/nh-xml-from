@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-pub enum FileExtention {
+pub enum FileExtension {
     Toml,
     Json,
     Ron,

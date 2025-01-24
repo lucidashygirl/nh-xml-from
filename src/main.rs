@@ -18,8 +18,8 @@ mod files;
 
 use {
     configs::{config_from_json, config_from_ron, config_from_toml, config_from_yaml, create_xml},
-    data::{Conditions, ConfigFile, Entry, FileExtention, NomaiTextBlock},
-    files::{create_xml_byte_vector, get_file_extention, get_file_name},
+    data::{Conditions, ConfigFile, Entry, FileExtension, NomaiTextBlock},
+    files::{create_xml_byte_vector, get_file_extension, get_file_name},
 };
 
 fn main() {
@@ -34,24 +34,24 @@ fn main() {
         quit!("File doesn't exist")
     };
     let file_name = get_file_name(file_path);
-    let extention = get_file_extention(&file_name);
-    let extention_enum = match extention.as_str() {
-        "toml" => FileExtention::Toml,
-        "json" => FileExtention::Json,
-        "yaml" | "yml" => FileExtention::Yaml,
-        "ron" => FileExtention::Ron,
+    let extension = get_file_extension(&file_name);
+    let extension_enum = match extension.as_str() {
+        "toml" => FileExtension::Toml,
+        "json" => FileExtension::Json,
+        "yaml" | "yml" => FileExtension::Yaml,
+        "ron" => FileExtension::Ron,
         _ => quit!("Incorrect Format!"),
     };
-    let name = file_name.replace(&extention, "");
+    let name = file_name.replace(&extension, "");
     let mut contents: String = String::new();
     let _ = config
         .read_to_string(&mut contents)
         .unwrap_or_else(|_| quit!("Couldn't convert to a string."));
-    let parsed_config: ConfigFile = match extention_enum {
-        FileExtention::Toml => config_from_toml(&contents),
-        FileExtention::Json => config_from_json(&contents),
-        FileExtention::Yaml => config_from_yaml(&contents),
-        FileExtention::Ron => config_from_ron(&contents),
+    let parsed_config: ConfigFile = match extension_enum {
+        FileExtension::Toml => config_from_toml(&contents),
+        FileExtension::Json => config_from_json(&contents),
+        FileExtension::Yaml => config_from_yaml(&contents),
+        FileExtension::Ron => config_from_ron(&contents),
     };
     let xml = create_xml(&parsed_config);
     let result = create_xml_byte_vector(xml.as_str());

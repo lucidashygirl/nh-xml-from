@@ -1,12 +1,12 @@
 use crate::{BytesEnd, BytesStart, Cursor, Event, Reader, Writer};
 
-pub fn get_file_extention(file_name: &str) -> String {
-    let mut extention_characters: Vec<char> = Vec::new();
+pub fn get_file_extension(file_name: &str) -> String {
+    let mut extension_characters: Vec<char> = Vec::new();
     for character in file_name.chars().rev() {
         if character == '.' {
-            return convert_extention_to_string(extention_characters);
+            return convert_extension_to_string(extension_characters);
         }
-        extention_characters.push(character);
+        extension_characters.push(character);
     }
     String::new()
 }
@@ -16,7 +16,7 @@ pub fn get_file_name(file_name: &str) -> String {
     let mut name = String::new();
     for character in file_name.chars().rev() {
         if character == '/' {
-            name = convert_extention_to_string(name_chars);
+            name = convert_extension_to_string(name_chars);
             break;
         }
         name_chars.push(character);
@@ -24,8 +24,8 @@ pub fn get_file_name(file_name: &str) -> String {
     name
 }
 
-pub fn convert_extention_to_string(extention_characters: Vec<char>) -> String {
-    extention_characters.into_iter().rev().collect()
+pub fn convert_extension_to_string(extension_characters: Vec<char>) -> String {
+    extension_characters.into_iter().rev().collect()
 }
 
 pub fn create_xml_byte_vector(xml: &str) -> Vec<u8> {
