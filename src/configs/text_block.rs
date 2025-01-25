@@ -6,8 +6,7 @@ pub fn generate_nomai_text_xml_string(toml: &ConfigFile) -> String {
     let mut xml = String::new();
     let schema = toml.schema.as_ref().map_or(DEFAULT_SCHEMA, |s| s);
     xml += format!(
-        r#"<{} xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{}">"#,
-        toml.file_type,
+        r#"<NomaiObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{}">"#,
         schema
     )
     .as_str();

@@ -11,10 +11,13 @@ keywords = ["modding", "outer-wilds", "new-horizons", "cli"]
 categories = ["command-line-utilities", "filesystem", "config"]
 
 [dependencies]
-quick-xml = "0.36.2"
 ron = "0.8.1"
 serde_json = "1.0.132"
 serde_yml = "0.0.12"
+
+[dependencies.quick-xml]
+version = "0.36.2"
+features = ["serialize"]
 
 [dependencies.toml]
 version = "0.8.19"
@@ -25,8 +28,6 @@ version = "1.0.210"
 features = ["derive"]
 
 [lints.clippy]
-unwrap_used = "deny"
-expect_used = "deny"
 pedantic = {level = "warn", priority = -1}
 cargo = {level = "warn", priority = -1}
 nursery = {level = "warn", priority = -1}
