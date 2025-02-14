@@ -1,0 +1,16 @@
+file_type = "NomaiObject"
+
+[[text_block]]
+id = 1
+text = "this is an example"
+location = [
+    "A",
+    "B",
+]
+
+[[log_condition]]
+location = ["A"]
+
+[[log_condition.reveal_fact]]
+id = "goobert"
+condition = [1]

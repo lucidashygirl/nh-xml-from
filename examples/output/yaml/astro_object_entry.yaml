@@ -1,0 +1,53 @@
+schema: null
+file_type: AstroObjectEntry
+text_block: null
+log_condition: null
+id: EXAMPLE
+entry:
+- id: EXAMPLE_ENTRY_ONE
+  name: Example One
+  curiosity: EXAMPLE_CURIOSITY_ONE
+  is_curiosity: null
+  ignore_more_to_explore: null
+  parent_ignore_not_revealed: null
+  ignore_more_to_explore_condition: null
+  alt_photo_condition: null
+  rumor_fact:
+  - id: EXAMPLE_RUMOR
+    text: This is some lame rumor text :3
+    source_id: EXAMPLE_CURIOSITY_ONE
+    rumor_name: Rumor Example
+    rumor_name_priority: null
+    ignore_more_to_explore: null
+  explore_fact:
+  - id: EXAMPLE_EXPLORE
+    text: Example of explore fact :3c
+    ignore_more_to_explore: true
+  entry:
+  - id: EXAMPLE_ENTRY_CHILD
+    name: Child Entry
+    curiosity: null
+    is_curiosity: null
+    ignore_more_to_explore: null
+    parent_ignore_not_revealed: null
+    ignore_more_to_explore_condition: null
+    alt_photo_condition: null
+    rumor_fact: null
+    explore_fact:
+    - id: EXAMPLE_EXPLORE_NESTED
+      text: Example of explore fact, in a child entry :3c
+      ignore_more_to_explore: null
+    entry: null
+- id: EXAMPLE_ENTRY_TWO
+  name: Example Two
+  curiosity: null
+  is_curiosity: null
+  ignore_more_to_explore: null
+  parent_ignore_not_revealed: null
+  ignore_more_to_explore_condition: null
+  alt_photo_condition: null
+  rumor_fact: null
+  explore_fact: null
+  entry: null
+name_field: null
+dialogue_node: null

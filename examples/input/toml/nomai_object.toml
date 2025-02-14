@@ -12,4 +12,4 @@ location = ["A"]
 
 [[log_condition.reveal_fact]]
 id = "goobert"
-condition = [1, 2]
+condition = [1]

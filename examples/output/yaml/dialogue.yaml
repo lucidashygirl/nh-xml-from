@@ -1,0 +1,150 @@
+schema: null
+file_type: DialogueTree
+text_block: null
+log_condition: null
+id: null
+entry: null
+name_field: Ernesto
+dialogue_node:
+- name: START
+  randomize: null
+  entry_condition:
+  - DEFAULT
+  dialogue:
+  - page:
+    - Hey it's me Ernesto the magic talking anglerfish.
+  reveal_facts:
+    fact_id:
+    - EXAMPLES_ERNESTO
+  set_persistent_condition: null
+  set_condition: null
+  disable_persistent_condition: null
+  dialogue_target_shiplog_condition: null
+  dialogue_target: null
+  dialogue_options_list:
+    dialogue_option:
+    - text: Wow you can talk?
+      required_log_condition: null
+      required_persistent_condition: null
+      cancelled_persistent_condition: null
+      required_condition: null
+      cancelled_condition: null
+      dialogue_target: '1'
+      condition_to_set: null
+      condition_to_cancel: null
+    - text: What do you think about Geswaldo?
+      required_log_condition: null
+      required_persistent_condition: null
+      cancelled_persistent_condition: null
+      required_condition: null
+      cancelled_condition: null
+      dialogue_target: '2'
+      condition_to_set: null
+      condition_to_cancel: null
+    - text: Where did you guys come from?
+      required_log_condition: null
+      required_persistent_condition: null
+      cancelled_persistent_condition: null
+      required_condition: null
+      cancelled_condition: null
+      dialogue_target: '3'
+      condition_to_set: null
+      condition_to_cancel: null
+    - text: I'll see you later.
+      required_log_condition: null
+      required_persistent_condition: null
+      cancelled_persistent_condition: null
+      required_condition: null
+      cancelled_condition: null
+      dialogue_target: '4'
+      condition_to_set: null
+      condition_to_cancel: null
+    reuse_dialogue_options_list_from: null
+- name: '1'
+  randomize: null
+  entry_condition: null
+  dialogue:
+  - page:
+    - No I can't, you must be mistaken.
+    - Haha that's a joke. I took speaking as an elective in college.
+  reveal_facts: null
+  set_persistent_condition: null
+  set_condition: null
+  disable_persistent_condition: null
+  dialogue_target_shiplog_condition: null
+  dialogue_target: null
+  dialogue_options_list:
+    dialogue_option:
+    - text: Oh.
+      required_log_condition: null
+      required_persistent_condition: null
+      cancelled_persistent_condition: null
+      required_condition: null
+      cancelled_condition: null
+      dialogue_target: START
+      condition_to_set: null
+      condition_to_cancel: null
+    reuse_dialogue_options_list_from: null
+- name: '2'
+  randomize: null
+  entry_condition: null
+  dialogue:
+  - page:
+    - I love him. He is my husband.
+  reveal_facts: null
+  set_persistent_condition: null
+  set_condition: null
+  disable_persistent_condition: null
+  dialogue_target_shiplog_condition: null
+  dialogue_target: null
+  dialogue_options_list:
+    dialogue_option:
+    - text: That's beautiful. I'm so happy for both of you.
+      required_log_condition: null
+      required_persistent_condition: null
+      cancelled_persistent_condition: null
+      required_condition: null
+      cancelled_condition: null
+      dialogue_target: START
+      condition_to_set: null
+      condition_to_cancel: null
+    reuse_dialogue_options_list_from: null
+- name: '3'
+  randomize: null
+  entry_condition: null
+  dialogue:
+  - page:
+    - Geswaldo and I were visiting my cousin on Wetrock, I don't know about the other two. I don't know those guys.
+  reveal_facts:
+    fact_id:
+    - EXAMPLES_ERNESTO_COUSIN_RUMOR
+  set_persistent_condition: null
+  set_condition: null
+  disable_persistent_condition: null
+  dialogue_target_shiplog_condition: null
+  dialogue_target: null
+  dialogue_options_list:
+    dialogue_option:
+    - text: Thanks for the info.
+      required_log_condition: null
+      required_persistent_condition: null
+      cancelled_persistent_condition: null
+      required_condition: null
+      cancelled_condition: null
+      dialogue_target: START
+      condition_to_set: null
+      condition_to_cancel: null
+    reuse_dialogue_options_list_from: null
+- name: '4'
+  randomize: null
+  entry_condition: null
+  dialogue:
+  - page:
+    - Bye bye.
+  reveal_facts: null
+  set_persistent_condition: null
+  set_condition: null
+  disable_persistent_condition: null
+  dialogue_target_shiplog_condition: null
+  dialogue_target: null
+  dialogue_options_list: null

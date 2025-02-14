@@ -1,0 +1,34 @@
+{
+  "schema": null,
+  "file_type": "NomaiObject",
+  "text_block": [
+    {
+      "id": 1,
+      "parent": null,
+      "text": "this is an example",
+      "location": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "log_condition": [
+    {
+      "reveal_fact": [
+        {
+          "id": "goobert",
+          "condition": [
+            1
+          ]
+        }
+      ],
+      "location": [
+        "A"
+      ]
+    }
+  ],
+  "id": null,
+  "entry": null,
+  "name_field": null,
+  "dialogue_node": null
+}
