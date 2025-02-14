@@ -42,11 +42,11 @@ fn main() {
 
     let file_path = &args[1];
 
-    let output_format = {
+    let mut output_format = {
         if args.len() == 3 {
             &args[2]
         } else {
-            "xml"
+            "toml"
         }
     };
     let Ok(mut config) = File::open(file_path) else {
@@ -65,6 +65,7 @@ fn main() {
         .unwrap_or_else(|_| quit!("Failed conversion to string."));
 
     let result = if extension.as_str() != "xml" {
+        output_format = "xml";
         let parsed_config: ConfigFile = match extension.as_str() {
             "toml" => config_from_toml(&contents),
             "json" => config_from_json(&contents),
