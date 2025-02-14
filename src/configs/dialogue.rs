@@ -1,5 +1,10 @@
+use crate::data::Dialogue;
 use crate::data::DialogueNode;
+use crate::data::DialogueNodeXml;
 use crate::data::DialogueOption;
+use crate::data::DialogueOptionsList;
+use crate::data::DialogueTree;
+use crate::data::RevealFacts;
 use crate::ConfigFile;
 
 const DEFAULT_SCHEMA: &str = "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/dialogue_schema.xsd";
@@ -167,4 +172,68 @@ fn for_option_in_dialogue_option(option: &DialogueOption) -> String {
 
     xml += "</DialogueOption>";
     xml
+}
+
+pub fn generate_dialogue_config(xml: DialogueTree) -> ConfigFile {
+    let mut config: ConfigFile = ConfigFile::default();
+    config.file_type = String::from("DialogueTree");
+    config.name_field = Some(xml.name_field);
+    config.dialogue_node = Some(dialogue_thingy(xml.dialogue_node));
+    config
+}
+
+pub fn dialogue_thingy(nodes: Vec<DialogueNodeXml>) -> Vec<DialogueNode> {
+    let mut node_vec: Vec<DialogueNode> = Vec::new();
+    for node in nodes {
+        let mut new_node: DialogueNode = DialogueNode::default();
+        new_node.name = node.name;
+        new_node.entry_condition = node.entry_condition;
+        if node.randomize.is_some() {
+            new_node.randomize = Some(true);
+        }
+        if let Some(dialogue) = node.dialogue {
+            let mut page_vec: Vec<Dialogue> = Vec::new();
+            for d in dialogue {
+                page_vec.push(Dialogue { page: d.page });
+            }
+            new_node.dialogue = Some(page_vec);
+        }
+        if let Some(facts) = node.reveal_facts {
+            new_node.reveal_facts = Some(RevealFacts {
+                fact_id: facts.fact_id,
+            });
+        }
+        new_node.set_persistent_condition = node.set_persistent_condition;
+        new_node.set_condition = node.set_condition;
+        new_node.disable_persistent_condition = node.disable_persistent_condition;
+        new_node.dialogue_target_shiplog_condition = node.dialogue_target_shiplog_condition;
+        new_node.dialogue_target = node.dialogue_target;
+        if let Some(dol) = node.dialogue_options_list {
+            let mut dialogue_options_list = DialogueOptionsList::default();
+            if let Some(d_o) = dol.dialogue_option {
+                let mut dialogue_option_vec: Vec<DialogueOption> = Vec::new();
+                for option in d_o {
+                    let mut dialogue_option = DialogueOption::default();
+                    dialogue_option.required_log_condition = option.required_log_condition;
+                    dialogue_option.required_persistent_condition =
+                        option.required_persistent_condition;
+                    dialogue_option.cancelled_persistent_condition =
+                        option.cancelled_persistent_condition;
+                    dialogue_option.required_condition = option.required_condition;
+                    dialogue_option.cancelled_condition = option.cancelled_condition;
+                    dialogue_option.text = option.text;
+                    dialogue_option.dialogue_target = option.dialogue_target;
+                    dialogue_option.condition_to_set = option.condition_to_set;
+                    dialogue_option.condition_to_cancel = option.condition_to_cancel;
+                    dialogue_option_vec.push(dialogue_option);
+                }
+                dialogue_options_list.dialogue_option = Some(dialogue_option_vec);
+            }
+            dialogue_options_list.reuse_dialogue_options_list_from =
+                dol.reuse_dialogue_options_list_from;
+            new_node.dialogue_options_list = Some(dialogue_options_list);
+        }
+        node_vec.push(new_node);
+    }
+    node_vec
 }

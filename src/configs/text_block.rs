@@ -1,4 +1,6 @@
-use crate::{Conditions, ConfigFile, NomaiTextBlock};
+use crate::{
+    Conditions, ConditionsXml, ConfigFile, Fact, NomaiObject, NomaiTextBlock, NomaiTextBlockXml,
+};
 
 const DEFAULT_SCHEMA: &str = "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/text_schema.xsd";
 
@@ -73,4 +75,57 @@ fn get_log_conditions(mut xml: String, log_conditions: &[Conditions]) -> String 
         xml += "</ShipLogConditions>".to_string().as_str();
     }
     xml
+}
+
+pub fn generate_nomai_object_config(xml: NomaiObject) -> ConfigFile {
+    let mut config: ConfigFile = ConfigFile::default();
+    config.file_type = String::from("NomaiObject");
+    if let Some(blocks) = xml.text_block {
+        config.text_block = Some(textblock_thingy(blocks));
+    }
+    if let Some(cond) = xml.log_condition {
+        config.log_condition = Some(log_thingy(cond));
+    }
+    config
+}
+
+pub fn textblock_thingy(blocks: Vec<NomaiTextBlockXml>) -> Vec<NomaiTextBlock> {
+    let mut block_vec: Vec<NomaiTextBlock> = Vec::new();
+    for block in blocks {
+        let mut new_block: NomaiTextBlock = NomaiTextBlock::default();
+        new_block.id = block.id;
+        new_block.parent = block.parent;
+        new_block.location = match (block.location_a, block.location_b) {
+            (Some(_), Some(_)) => Some(Vec::from(["A".to_owned(), "B".to_owned()])),
+            (Some(_), None) => Some(Vec::from(["A".to_owned()])),
+            (None, Some(_)) => Some(Vec::from(["B".to_owned()])),
+            _ => None,
+        };
+        new_block.text = block.text;
+        block_vec.push(new_block);
+    }
+    block_vec
+}
+
+pub fn log_thingy(logs: Vec<ConditionsXml>) -> Vec<Conditions> {
+    let mut log_vec: Vec<Conditions> = Vec::new();
+    for log in logs {
+        let mut new_log: Conditions = Conditions::default();
+        new_log.location = match (log.location_a, log.location_b) {
+            (Some(_), Some(_)) => Some(Vec::from(["A".to_owned(), "B".to_owned()])),
+            (Some(_), None) => Some(Vec::from(["A".to_owned()])),
+            (None, Some(_)) => Some(Vec::from(["B".to_owned()])),
+            _ => None,
+        };
+        let mut fact_vec: Vec<Fact> = Vec::new();
+        for fact in log.reveal_fact {
+            fact_vec.push(Fact {
+                id: fact.id,
+                condition: fact.condition,
+            })
+        }
+        new_log.reveal_fact = fact_vec;
+        log_vec.push(new_log);
+    }
+    log_vec
 }

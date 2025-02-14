@@ -1,6 +1,6 @@
 use crate::{
-    AstroObjectEntry, ConfigFile, ConfigFileXml, Entry, EntryXml, ExploreFact, ExploreFactXml,
-    RumorFact, RumorFactXml,
+    AstroObjectEntry, ConfigFile, Entry, EntryXml, ExploreFact, ExploreFactXml, RumorFact,
+    RumorFactXml,
 };
 
 const DEFAULT_SCHEMA: &str = "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd";

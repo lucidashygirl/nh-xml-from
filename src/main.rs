@@ -17,16 +17,19 @@ mod data;
 mod files;
 
 use configs::astro_object::generate_astro_object_config;
+use configs::dialogue::generate_dialogue_config;
+use configs::text_block::generate_nomai_object_config;
 use {
     configs::{
         astro_config_from_xml, config_from_json, config_from_ron, config_from_toml,
-        config_from_yaml, create_xml,
+        config_from_yaml, create_xml, dialogue_config_from_xml, nomai_config_from_xml,
     },
     data::{
-        AstroObjectEntry, Conditions, ConfigFile, ConfigFileXml, Entry, EntryXml, ExploreFact,
-        ExploreFactXml, NomaiTextBlock, RumorFact, RumorFactXml,
+        AstroObjectEntry, Conditions, ConditionsXml, ConfigFile, DialogueTree, Entry, EntryXml,
+        ExploreFact, ExploreFactXml, Fact, NomaiObject, NomaiTextBlock, NomaiTextBlockXml,
+        RumorFact, RumorFactXml, SchemaFormat,
     },
-    files::{create_xml_byte_vector, get_file_extension, get_file_name},
+    files::{create_xml_byte_vector, get_file_extension, get_file_name, get_input_format},
 };
 
 fn main() {
@@ -43,7 +46,7 @@ fn main() {
         if args.len() == 3 {
             &args[2]
         } else {
-            "toml"
+            "xml"
         }
     };
     let Ok(mut config) = File::open(file_path) else {
@@ -61,7 +64,7 @@ fn main() {
         .read_to_string(&mut contents)
         .unwrap_or_else(|_| quit!("Failed conversion to string."));
 
-    if extension.as_str() != "xml" {
+    let result = if extension.as_str() != "xml" {
         let parsed_config: ConfigFile = match extension.as_str() {
             "toml" => config_from_toml(&contents),
             "json" => config_from_json(&contents),
@@ -70,31 +73,67 @@ fn main() {
             _ => quit!("previous check for extension failed, please report"),
         };
         let xml = create_xml(&parsed_config);
-        let result = create_xml_byte_vector(xml.as_str());
-        let mut file = match File::create(format!("{name}xml")) {
-            Ok(f) => f,
-            Err(err) => quit!(format!("Failed to create file:\n{}", err)),
+        create_xml_byte_vector(xml.as_str())
+    } else {
+        let parsed_config = match get_input_format(&contents) {
+            SchemaFormat::AstroObjectEntry => {
+                generate_astro_object_config(astro_config_from_xml(&contents))
+            }
+            SchemaFormat::NomaiObject => {
+                generate_nomai_object_config(nomai_config_from_xml(&contents))
+            }
+            SchemaFormat::DialogueTree => {
+                generate_dialogue_config(dialogue_config_from_xml(&contents))
+            }
         };
-        match file.write_all(&result) {
-            Ok(()) => quit!(),
-            Err(err) => quit!(format!("Failed to write to file:\n{}", err)),
+        match output_format {
+            "toml" => toml_string(parsed_config),
+            "json" => json_string(parsed_config),
+            "ron" => ron_string(parsed_config),
+            "yaml" | "yml" => yaml_string(parsed_config),
+            _ => quit!("Impossible case, or it should be at least..."),
         }
-    }
-
-    let parsed_config = astro_config_from_xml(&contents);
-    let toml = generate_astro_object_config(parsed_config);
-
-    let result = toml::to_string_pretty(&toml);
-    let result = match result {
-        Ok(r) => r,
-        Err(e) => quit!(format!("{}", e)),
+        .as_bytes()
+        .to_vec()
     };
-    let mut file = match File::create(format!("{name}toml")) {
+    let mut file = match File::create(format!("{name}{output_format}")) {
         Ok(f) => f,
         Err(err) => quit!(format!("Failed to create file:\n{}", err)),
     };
-    match file.write_all(result.as_bytes()) {
+    match file.write_all(&result) {
         Ok(()) => quit!(),
         Err(err) => quit!(format!("Failed to write to file:\n{}", err)),
+    }
+}
+
+fn toml_string(cfg: ConfigFile) -> String {
+    let result = toml::to_string_pretty(&cfg);
+    match result {
+        Ok(r) => r,
+        Err(e) => quit!(format!("{}", e)),
+    }
+}
+
+fn json_string(cfg: ConfigFile) -> String {
+    let result = serde_json::to_string_pretty(&cfg);
+    match result {
+        Ok(r) => r,
+        Err(e) => quit!(format!("{}", e)),
+    }
+}
+
+fn ron_string(cfg: ConfigFile) -> String {
+    let result = ron::ser::to_string_pretty(&cfg, ron::ser::PrettyConfig::default());
+    match result {
+        Ok(r) => r,
+        Err(e) => quit!(format!("{}", e)),
+    }
+}
+
+fn yaml_string(cfg: ConfigFile) -> String {
+    let result = serde_yml::ser::to_string(&cfg);
+    match result {
+        Ok(r) => r,
+        Err(e) => quit!(format!("{}", e)),
     }
 }

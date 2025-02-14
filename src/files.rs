@@ -1,4 +1,4 @@
-use crate::{BytesEnd, BytesStart, Cursor, Event, Reader, Writer};
+use crate::{BytesEnd, BytesStart, Cursor, Event, Reader, SchemaFormat, Writer};
 
 pub fn get_file_extension(file_name: &str) -> String {
     let mut extension: Vec<char> = Vec::new();
@@ -22,12 +22,24 @@ pub fn get_file_name(file_name: &str) -> String {
     name.iter().rev().collect()
 }
 
+pub fn get_input_format(config: &str) -> SchemaFormat {
+    if config.contains("<AstroObjectEntry") {
+        return SchemaFormat::AstroObjectEntry;
+    }
+    if config.contains("<NomaiObject") {
+        return SchemaFormat::NomaiObject;
+    }
+    if config.contains("<DialogueTree") {
+        return SchemaFormat::DialogueTree;
+    }
+    quit!("NO FORMAT DETECTED!!!!");
+}
+
 pub fn create_xml_byte_vector(xml: &str) -> Vec<u8> {
     let mut reader = Reader::from_str(xml);
     reader.config_mut().trim_text(true);
     let mut writer = Writer::new_with_indent(Cursor::new(Vec::new()), 32, 2);
-    // NOTE: might replace with a currying function later, but i cannot get it to work lol
-    // also this is from the quickxml examples so no i dont know what this does :3c
+    // this is from the quickxml examples so no i dont know what this does :3c
     loop {
         match reader.read_event() {
             Ok(Event::Start(e)) if e.name().as_ref() == b"this_tag" => {

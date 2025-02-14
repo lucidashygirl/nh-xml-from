@@ -1,5 +1,11 @@
 use serde::{Deserialize, Serialize};
 
+pub enum SchemaFormat {
+    AstroObjectEntry,
+    DialogueTree,
+    NomaiObject,
+}
+
 #[derive(Deserialize, Serialize, Default, Debug)]
 pub struct ConfigFile {
     pub schema: Option<String>,
@@ -113,7 +119,12 @@ pub struct RevealFacts {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct NomaiObject;
+pub struct NomaiObject {
+    #[serde(rename = "TextBlock")]
+    pub text_block: Option<Vec<NomaiTextBlockXml>>,
+    #[serde(rename = "ShipLogConditions")]
+    pub log_condition: Option<Vec<ConditionsXml>>,
+}
 #[derive(Deserialize, Serialize, Debug)]
 pub struct AstroObjectEntry {
     #[serde(rename = "ID")]
@@ -122,7 +133,12 @@ pub struct AstroObjectEntry {
     pub entry: Option<Vec<EntryXml>>,
 }
 #[derive(Deserialize, Serialize, Debug)]
-pub struct DialogueTree;
+pub struct DialogueTree {
+    #[serde(rename = "NameField")]
+    pub name_field: String,
+    #[serde(rename = "DialogueNode")]
+    pub dialogue_node: Vec<DialogueNodeXml>,
+}
 
 #[derive(Deserialize, Serialize, Default, Debug)]
 pub struct ConfigFileXml {
@@ -265,7 +281,7 @@ pub struct EntryXml {
 
 #[derive(Deserialize, Serialize, Debug, Default, Clone)]
 pub struct FactXml {
-    #[serde(rename = "ID")]
+    #[serde(rename = "FactID")]
     pub id: String,
     #[serde(rename = "Condition")]
     pub condition: Vec<i64>,
