@@ -1,12 +1,14 @@
 # nh-xml-from
-A tool that lets you convert TOML, JSON, YAML, and RON to XML for New Horizons
+A tool that lets you convert TOML, JSON, YAML, and RON to XML for New Horizons, as well as the other way around.
 
 ## Usage
 
 Run the command in the directory you would like the XML file to generate at.
 (You have to add the app to your path, unless you want to run it directly every time)
 
-`nh-xml-from <path_to_input_file>`
+`nh-xml-from <path_to_input_file> <toml/json/ron/yaml>`
+
+Note that the third parameter only matters if converting XML to one of the other formats.
 
 ## Formatting
 
@@ -47,5 +49,4 @@ You can install with the following methods:
 - Clone the repository and compile with the release flag (Necessary on every platform not included in the release page)
 - From crates.io using Cargo: `cargo install nh-xml-from`
 
-Whichever way you get the program, it is recommended that you put it in your shell's path so that
-you can run it as a command from anywhere. The tool may be available in the future from the AUR.
+The tool may be available in the future from the AUR.
