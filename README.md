@@ -10,6 +10,10 @@ Run the command in the directory you would like the XML file to generate at.
 
 Note that the third parameter only matters if converting XML to one of the other formats.
 
+You can also use the `nh_iter.sh` script to run this command on each file in a directory
+
+`bash nh_iter.sh <path_to_input_folder> <toml/json/ron/yaml>`
+
 ## Formatting
 
 [NomaiObject](https://nh.outerwildsmods.com/schemas/text-schema/), [DialogueTree](https://nh.outerwildsmods.com/schemas/dialogue-schema/), and
