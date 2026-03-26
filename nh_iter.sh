@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# DISCLAIMER!! This script was generated with Copilot. I regret doing so, but it works and the damage
+# has already been done. Future projects will not intentionally contain any generated code in the future. 
+
 # Check if a directory is provided as an argument
 if [ -z "$1" ]; then
     echo "Usage: $0 <directory>"
